@@ -20,7 +20,6 @@ export const useGetUsersHook = () => {
       .then((res) => {
 
         if (res?.status == 200) {
-          console.log(res, "response");
           setUsers(res?.data?.data?.data)
           setLoading(false);
         } else {

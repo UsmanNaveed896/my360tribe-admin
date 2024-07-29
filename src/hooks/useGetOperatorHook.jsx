@@ -4,28 +4,27 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export const useAddOperatorHook = () => {
+export const useGetOperatorHook = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [getOperators,setGetOperators]=useState();
   const [loginResponse, setLoginResponse] = useState();
   let token = localStorage.getItem("token");
 
-  const handleAdOperator = (data) => {
+  const handleGetOperator = () => {
     setLoading(true);
     let headers = {
       Authorization: "Bearer " + token,
     };
     axios
-      .post("https://backend-api.my360tribe.org/api/v1/operator-intake", data, {
+      .get("https://backend-api.my360tribe.org/api/v1/operator-intake", {
         headers,
       })
       .then((res) => {
-        console.log(res, "response");
-        if (res?.status == 201) {
-          toast.success("Form Submitted Successfully");
-
+        console.log(res, "operator");
+        if (res?.status == 200) {
+          setGetOperators(res?.data?.data?.operatorIntakes)
           setLoading(false);
-          navigate("/");
         } else {
           toast.error(res?.message);
           setLoading(false);
@@ -39,8 +38,9 @@ export const useAddOperatorHook = () => {
   };
 
   return {
-    handleAdOperator,
+    handleGetOperator,
     loading,
     loginResponse,
+    getOperators
   };
 };

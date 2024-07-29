@@ -38,7 +38,7 @@ console.log(role,"role")
           name: 'Users',
           path: '/users',
           element: <Tables />,
-          condition: role === 'superAdmin',
+          condition: role === 'superAdmin' || role === 'admin',
        
         },
         {
@@ -53,28 +53,28 @@ console.log(role,"role")
           name: 'Operators',
           path: '/operator',
           element: <Operator />,
-          condition: role === 'superAdmin' || role === 'operator',
+          condition: role === 'superAdmin' || role === 'operator' || role === 'admin',
         },
         {
           icon: <MdOutlineReduceCapacity {...icon} />,
           name: 'Conceirge',
           path: '/conceirge',
           element: <Conceirge />,
-          condition: role === 'superAdmin' || role === 'conceirge',
+          condition: role === 'superAdmin' || role === 'conceirge' || role === 'admin',
         },
         {
           icon: <MdSupervisedUserCircle {...icon} />,
           name: 'Peer Ambassador',
           path: '/peer-ambassador',
           element: <PeerAmbassador />,
-          condition: role === 'superAdmin' || role === 'peerAmbassador',
+          condition: role === 'superAdmin' || role === 'peerAmbassador' || role === 'admin',
         },
         {
           icon: <FaUsers {...icon} />,
           name: 'Service Partners',
           path: '/service-partner',
           element: <ServicePartners />,
-          condition: role === 'superAdmin' || role === 'servicePartner',
+          condition: role === 'superAdmin' || role === 'servicePartner' || role === 'admin',
 
         },
       ].filter(route => route.condition !== false), 
