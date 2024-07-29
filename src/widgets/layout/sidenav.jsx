@@ -20,6 +20,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
     white: "bg-white shadow-sm",
     transparent: "bg-transparent",
   };
+  const routeConfigs = routes();
 
   return (
     <aside
@@ -27,16 +28,13 @@ export function Sidenav({ brandImg, brandName, routes }) {
         openSidenav ? "translate-x-0" : "-translate-x-80"
       } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100`}
     >
-      <div
-        className={`relative`}
-      >
+      <div className={`relative`}>
         <Link to="/" className="py-6 px-8 text-center">
           <Typography
             variant="h6"
             color={sidenavType === "dark" ? "white" : "blue-gray"}
           >
-            {auth ? localStorage.getItem('name') : ""} 
-          
+            {auth ? localStorage.getItem("name") : ""}
           </Typography>
         </Link>
         <IconButton
@@ -51,7 +49,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
         </IconButton>
       </div>
       <div className="m-4">
-        {routes.map(({ layout, title, pages }, key) => (
+        {routeConfigs.map(({ layout, title, pages }, key) => (
           <ul key={key} className="mb-4 flex flex-col gap-1">
             {title && (
               <li className="mx-3.5 mt-4 mb-2">
@@ -92,6 +90,16 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </NavLink>
               </li>
             ))}
+            <li>
+              {" "}
+              <Typography
+                  variant="small"
+                  color={sidenavType === "dark" ? "white" : "blue-gray"}
+                  className="font-black uppercase opacity-75 text-xs my-3"
+                >
+                  Forms
+                </Typography>
+            </li>
           </ul>
         ))}
       </div>

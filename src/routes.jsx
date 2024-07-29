@@ -1,73 +1,86 @@
+import React, { useContext } from 'react';
 import {
   HomeIcon,
   UserCircleIcon,
   TableCellsIcon,
   InformationCircleIcon,
-  ServerStackIcon,
-  RectangleStackIcon,
-} from "@heroicons/react/24/solid";
-import { Home, Profile, Tables, Notifications,} from "@/pages/dashboard";
-import Permissions  from './pages/dashboard/permissions';
-import { SignUp } from "@/pages/auth";
+} from '@heroicons/react/24/solid';
+import { FaUsers } from 'react-icons/fa';
+import { Home, Profile, Tables, Notifications } from '@/pages/dashboard';
+import Permissions from './pages/dashboard/permissions';
+import { SignUp } from '@/pages/auth';
+import Operator from './pages/forms.jsx/operator';
+import Conceirge from './pages/forms.jsx/conceirge';
+import { MdOutlineReduceCapacity, MdSupervisedUserCircle } from 'react-icons/md';
+import PeerAmbassador from './pages/forms.jsx/peerAmbassador';
+import ServicePartners from './pages/forms.jsx/servicePartners';
+import { AuthContext } from './pages/auth/authecontext';
 
 const icon = {
-  className: "w-5 h-5 text-inherit",
+  className: 'w-5 h-5 text-inherit',
 };
 
-export const routes = [
-  {
-    layout: "dashboard",
-    pages: [
-      {
-        icon: <HomeIcon {...icon} />,
-        name: "dashboard",
-        path: "/home",
-        element: <Home />,
-      },
-      // {
-      //   icon: <UserCircleIcon {...icon} />,
-      //   name: "profile",
-      //   path: "/profile",
-      //   element: <Profile />,
-      // },
-      {
-        icon: <UserCircleIcon {...icon} />,
-        name: "Users",
-        path: "/users",
-        element: <Tables />,
-      },
-      // {
-      //   icon: <InformationCircleIcon {...icon} />,
-      //   name: "notifications",
-      //   path: "/notifications",
-      //   element: <Notifications />,
-      // },
-      {
-        icon: <InformationCircleIcon {...icon} />,
-        name: "Permissions",
-        path: "/roles",
-        element: <Permissions />,
-      },
-    ],
-  },
-  // {
-  //   title: "auth pages",
-  //   layout: "auth",
-  //   pages: [
-  //     {
-  //       icon: <ServerStackIcon {...icon} />,
-  //       name: "sign in",
-  //       path: "/sign-in",
-  //       element: <SignIn />,
-  //     },
-  //     {
-  //       icon: <RectangleStackIcon {...icon} />,
-  //       name: "sign up",
-  //       path: "/sign-up",
-  //       element: <SignUp />,
-  //     },
-  //   ],
-  // },
-];
+const routes = () => {
+  const { auth, role } = useContext(AuthContext);
+console.log(role,"role")
+  return [
+    {
+      layout: 'dashboard',
+      pages: [
+        {
+          icon: <HomeIcon {...icon} />,
+          name: 'dashboard',
+          path: '/home',
+          element: <Home />,
+        },
+        {
+          icon: <UserCircleIcon {...icon} />,
+          name: 'Users',
+          path: '/users',
+          element: <Tables />,
+          condition: role === 'superAdmin',
+       
+        },
+        {
+          icon: <InformationCircleIcon {...icon} />,
+          name: 'Permissions',
+          path: '/roles',
+          element: <Permissions />,
+          condition: role === 'admin',
+        },
+        {
+          icon: <TableCellsIcon {...icon} />,
+          name: 'Operators',
+          path: '/operator',
+          element: <Operator />,
+          condition: role === 'superAdmin' || role === 'operator',
+        },
+        {
+          icon: <MdOutlineReduceCapacity {...icon} />,
+          name: 'Conceirge',
+          path: '/conceirge',
+          element: <Conceirge />,
+          condition: role === 'superAdmin' || role === 'conceirge',
+        },
+        {
+          icon: <MdSupervisedUserCircle {...icon} />,
+          name: 'Peer Ambassador',
+          path: '/peer-ambassador',
+          element: <PeerAmbassador />,
+          condition: role === 'superAdmin' || role === 'peerAmbassador',
+        },
+        {
+          icon: <FaUsers {...icon} />,
+          name: 'Service Partners',
+          path: '/service-partner',
+          element: <ServicePartners />,
+          condition: role === 'superAdmin' || role === 'servicePartner',
+
+        },
+      ].filter(route => route.condition !== false), 
+    },
+
+  ];
+};
 
 export default routes;

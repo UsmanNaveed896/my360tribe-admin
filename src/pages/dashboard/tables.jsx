@@ -141,7 +141,7 @@ export function Tables() {
                         />
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
+                        <Typography className="text-xs font-semibold text-blue-gray-600 uppercase">
                           {role}
                         </Typography>
                       </td>

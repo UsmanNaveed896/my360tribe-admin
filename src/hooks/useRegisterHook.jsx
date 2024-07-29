@@ -21,23 +21,20 @@ export const useRegisterHook = () => {
       .then((res) => {
         if (res?.status == 200) {
           console.log(res, "response");
-          if(res?.data?.data?.user?.role == "superAdmin") {
-            toast.success("Logged In Successfully");
-            const token = res?.data?.token;
-            const userid = res?.data?.data?.user?._id;
-            const name = res?.data?.data?.user?.fullName;
-            const photo = res?.data?.data?.user?.photo;
-            localStorage.setItem("photo", photo);
-            localStorage.setItem("name", name);
-            localStorage.setItem("token", token);
-            localStorage.setItem("user_id", userid);
-            setLoading(false);
-            navigate("/dashboard/home");
-          }else{
-            toast.error("You are not authorized !")
-            setLoading(false)
-          }
-         
+
+          toast.success("Logged In Successfully");
+          const token = res?.data?.token;
+          const userid = res?.data?.data?.user?._id;
+          const name = res?.data?.data?.user?.fullName;
+          const photo = res?.data?.data?.user?.photo;
+          const role = res?.data?.data?.user?.role;
+          localStorage.setItem("role", role);
+          localStorage.setItem("photo", photo);
+          localStorage.setItem("name", name);
+          localStorage.setItem("token", token);
+          localStorage.setItem("user_id", userid);
+          setLoading(false);
+          navigate("/dashboard/home");
         } else {
           toast.error(res?.message);
           setLoading(false);
