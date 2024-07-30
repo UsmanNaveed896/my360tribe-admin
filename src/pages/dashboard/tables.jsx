@@ -81,8 +81,8 @@ export function Tables() {
       headerName: 'Status',
       renderCell: (params) => (
         <div className="flex justify-start items-center">
-          <Typography className="mt-5 p-1 text-white font-semibold rounded" style={{
-            backgroundColor: params.value === "inactive" ? "#eb4946" : params.value === "pending" ? "blue" : "blue-gray"
+          <Typography className="mt-5 p-1 text-xs text-white font-semibold rounded" style={{
+            backgroundColor: params.value === "inactive" ? "#eb4946" : params.value === "pending" ? "#7367f0" : "blue-gray"
           }}>
             {params.value === "inactive" ? "Inactive" : params.value === "pending" ? "Pending" : "Active"}
           </Typography>
