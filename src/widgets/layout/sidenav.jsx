@@ -32,6 +32,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
         <Link to="/" className="py-6 px-8 text-center">
           <Typography
             variant="h6"
+            className="uppercase"
             color={sidenavType === "dark" ? "white" : "blue-gray"}
           >
             {auth ? localStorage.getItem("name") : ""}
@@ -90,16 +91,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </NavLink>
               </li>
             ))}
-            <li>
-              {" "}
-              <Typography
-                  variant="small"
-                  color={sidenavType === "dark" ? "white" : "blue-gray"}
-                  className="font-black uppercase opacity-75 text-xs my-3"
-                >
-                  Forms
-                </Typography>
-            </li>
+          
           </ul>
         ))}
       </div>

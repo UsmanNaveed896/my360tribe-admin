@@ -4,32 +4,34 @@ import {
   CardHeader,
   CardBody,
   Typography,
-  Avatar,
-  Chip,
   Button,
   Input,
-  Select,
-  Option,
 } from "@material-tailwind/react";
-import { useGetUsersHook } from "@/hooks/useGetUsersHook";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 import { Puff } from "react-loader-spinner";
+import { useGetPeerAmbassadorHook } from "@/hooks/useGetPeerAmbassadorHook";
 
 const PeerAmbassador = () => {
-  const usersHook = useGetUsersHook();
+  const peersGet = useGetPeerAmbassadorHook();
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [openViewModal, setOpenViewModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
-    usersHook.handleGetUsers();
-    if (usersHook.loginResponse) {
+    peersGet.handleGetPeerAmbassador();
+    if (peersGet.loginResponse) {
       handleCloseEditModal();
     }
-  }, [usersHook.loginResponse]);
+  }, [peersGet.loginResponse]);
 
   const handleOpenEditModal = (user) => {
     setSelectedUser(user);
     setOpenEditModal(true);
+  };
+
+  const handleOpenViewModal = (user) => {
+    setSelectedUser(user);
+    setOpenViewModal(true);
   };
 
   const handleCloseEditModal = () => {
@@ -37,22 +39,29 @@ const PeerAmbassador = () => {
     setOpenEditModal(false);
   };
 
+  const handleCloseViewModal = () => {
+    setSelectedUser(null);
+    setOpenViewModal(false);
+  };
+
   const handleSaveChanges = () => {
-    usersHook.handleEditUsers(selectedUser);
+    console.log(selectedUser, "users");
+    peersGet.handleEditPeerAmbassadorForm(selectedUser);
   };
 
   const handleDelete = (id) => {
-    usersHook.handleDelete(id);
+    peersGet.handleDelete(id);
   };
+  console.log(peersGet.getPeerAmbassador, "peersGet");
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
           <Typography variant="h6" color="white">
-            Peer Ambassador
+            Conceirge
           </Typography>
         </CardHeader>
-        {usersHook.loading ? (
+        {peersGet?.loading ? (
           <div className="flex justify-center">
             <Puff
               visible={true}
@@ -65,12 +74,23 @@ const PeerAmbassador = () => {
             />
           </div>
         ) : (
-          <CardBody className=" px-0 pt-0 pb-2 ">
-            <table className="w-full min-w-[640px] table-auto">
-              <thead>
-                <tr>
-                  {["Full Name", "Phone", "Status", "Role", "Actions"].map(
-                    (el) => (
+          <CardBody className="px-0 pt-0 pb-2">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px] table-auto">
+                <thead>
+                  <tr>
+                    {[
+                      "Full Name",
+                      "DOB",
+                      "Branch of Service",
+                      "Contact Method",
+                      "Source",
+                      "Reason",
+                      "No of Hr/Operators",
+                      "Organization",
+                      "Support Areas",
+                      "Topics",
+                    ].map((el) => (
                       <th
                         key={el}
                         className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -82,141 +102,194 @@ const PeerAmbassador = () => {
                           {el}
                         </Typography>
                       </th>
-                    )
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {usersHook?.users?.filter(
-                  ({ role }) => role === "peerAmbassador"
-                ).length > 0 ? (
-                  usersHook?.users
-                    ?.filter(({ role }) => role === "peerAmbassador")
-                    ?.slice()
-                    ?.reverse()
-                    ?.map(
-                      (
-                        { photo, fullName, email, status, phone, role, _id },
-                        key
-                      ) => {
-                        const className = `py-3 px-5 ${
-                          key === usersHook?.users?.length - 1
-                            ? ""
-                            : "border-b border-blue-gray-50"
-                        }`;
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {peersGet?.getPeerAmbassador?.length > 0 ? (
+                    peersGet?.getPeerAmbassador
+                      ?.slice()
+                      ?.reverse()
+                      ?.map(
+                        (
+                          {
+                            fullName,
+                            phone,
+                            email,
+                            branchOfService,
+                            contactMethod,
+                            howHeardAboutUs,
+                            dob,
+                            _id,
+                            whyPeerAmbassador,
+                            hoursPerMonth,
+                            numberOfOperators,
+                            transitionServices,
+                            recommendedTransitionServices,
+                            areasOfSupport,
+                            uncomfortableTopics,
+                          },
+                          key
+                        ) => {
+                          const className = `py-3 px-5 ${
+                            key === peersGet?.getPeerAmbassador?.length - 1
+                              ? ""
+                              : "border-b border-blue-gray-50"
+                          }`;
 
-                        const photoUrl = photo.startsWith("http://")
-                          ? photo.replace("http://", "https://")
-                          : photo;
-
-                        return (
-                          <tr key={_id}>
-                            <td className={className}>
-                              <div className="flex items-center gap-4">
-                                <Avatar
-                                  src={photoUrl}
-                                  alt={fullName}
-                                  size="sm"
-                                  variant="rounded"
-                                />
-                                <div>
-                                  <Typography
-                                    variant="small"
-                                    color="blue-gray"
-                                    className="font-semibold"
-                                  >
-                                    {fullName}
-                                  </Typography>
-                                  <Typography className="text-xs font-normal text-blue-gray-500">
-                                    {email}
+                          return (
+                            <tr key={_id}>
+                              <td className={className}>
+                                <div className="flex items-center gap-4">
+                                  <div>
+                                    <Typography
+                                      variant="small"
+                                      color="blue-gray"
+                                      className="font-semibold text-xs"
+                                    >
+                                      {fullName}
+                                    </Typography>
+                                    <p className="text-xs">{email}</p>
+                                    <p className="text-xs">{phone}</p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className={className}>
+                                <Typography className="text-xs  text-blue-gray-600">
+                                  {dob?.slice(0, 10)}
+                                </Typography>
+                              </td>
+                              <td className={className}>
+                                <Typography className="text-xs  text-blue-gray-600">
+                                  {branchOfService}
+                                </Typography>
+                              </td>
+                              <td className={className}>
+                                <div className="flex justify-start">
+                                  <Typography className="text-xs  text-blue-gray-600 ">
+                                    {contactMethod}
                                   </Typography>
                                 </div>
-                              </div>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600">
-                                {phone}
-                              </Typography>
-                            </td>
-                            <td className={className}>
-                              <Chip
-                                variant="gradient"
-                                color={
-                                  status === "inactive"
-                                    ? "red"
-                                    : status === "pending"
-                                    ? "blue"
-                                    : "blue-gray"
-                                }
-                                value={
-                                  status === "inactive"
-                                    ? "inactive"
-                                    : status === "pending"
-                                    ? "pending"
-                                    : "active"
-                                }
-                                className="py-0.5 px-2 text-[11px] font-medium w-fit"
-                              />
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600 uppercase">
-                                {role}
-                              </Typography>
-                            </td>
-                            <td
-                              className={className}
-                              style={{ display: "flex", gap: "6px" }}
-                            >
-                              <Typography
-                                as="a"
-                                href="#"
-                                className="text-xs font-semibold text-blue-gray-600"
-                                onClick={() =>
-                                  handleOpenEditModal({
-                                    _id,
-                                    photo,
-                                    fullName,
-                                    email,
-                                    status,
-                                    phone,
-                                    role,
-                                  })
-                                }
+                              </td>
+                              <td className={className}>
+                                <Typography className="text-xs  text-blue-gray-600 ">
+                                  {howHeardAboutUs}
+                                </Typography>
+                              </td>
+                              <td className={className}>
+                                <Typography className="text-xs  text-blue-gray-600 ">
+                                  {whyPeerAmbassador}
+                                </Typography>
+                              </td>
+                              <td className={className}>
+                                <Typography className="text-xs  text-blue-gray-600 ">
+                                  {hoursPerMonth} / {numberOfOperators}
+                                </Typography>
+                              </td>
+                              <td className={className}>
+                                <Typography className="text-xs  text-blue-gray-600 ">
+                                  {transitionServices}
+                                </Typography>
+                              </td>
+                              <td className={className}>
+                                <Typography className="text-xs  text-blue-gray-600 ">
+                                  {recommendedTransitionServices}
+                                </Typography>
+                              </td>
+                              <td className={className}>
+                                <Typography className="text-xs  text-blue-gray-600 ">
+                                  {uncomfortableTopics}
+                                </Typography>
+                              </td>
+                              <td
+                                className={className}
+                                style={{ display: "flex", gap: "6px" }}
                               >
-                                <MdEdit className="h-4 w-4" />
-                              </Typography>
-                              <Typography
-                                as="a"
-                                href="#"
-                                className="text-xs font-semibold text-blue-gray-600"
-                                onClick={() => handleDelete(_id)}
-                              >
-                                <MdDelete className="h-4 w-4" />
-                              </Typography>
-                            </td>
-                          </tr>
-                        );
-                      }
-                    )
-                ) : (
-                  <tr>
-                    <td
-                      colSpan="5"
-                      className="py-3 px-5 text-center text-blue-gray-500"
-                    >
-                      No data available
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                                <Typography
+                                  as="a"
+                                  href="#"
+                                  className="text-xs  text-blue-gray-600"
+                                  onClick={() =>
+                                    handleOpenViewModal({
+                                      fullName,
+                                      phone,
+                                      email,
+                                      branchOfService,
+                                      contactMethod,
+                                      howHeardAboutUs,
+                                      dob,
+                                      _id,
+                                      whyPeerAmbassador,
+                                      hoursPerMonth,
+                                      numberOfOperators,
+                                      transitionServices,
+                                      recommendedTransitionServices,
+                                      areasOfSupport,
+                                      uncomfortableTopics,
+                                    })
+                                  }
+                                >
+                                  <MdVisibility className="h-4 w-4" />
+                                </Typography>
+                                <Typography
+                                  as="a"
+                                  href="#"
+                                  className="text-xs font-semibold text-blue-gray-600"
+                                  onClick={() =>
+                                    handleOpenEditModal({
+                                      fullName,
+                                      phone,
+                                      email,
+                                      branchOfService,
+                                      contactMethod,
+                                      howHeardAboutUs,
+                                      dob,
+                                      _id,
+                                      whyPeerAmbassador,
+                                      hoursPerMonth,
+                                      numberOfOperators,
+                                      transitionServices,
+                                      recommendedTransitionServices,
+                                      areasOfSupport,
+                                      uncomfortableTopics,
+                                    })
+                                  }
+                                >
+                                  <MdEdit className="h-4 w-4" />
+                                </Typography>
+                                <Typography
+                                  as="a"
+                                  href="#"
+                                  className="text-xs font-semibold text-blue-gray-600"
+                                  onClick={() => handleDelete(_id)}
+                                >
+                                  <MdDelete className="h-4 w-4" />
+                                </Typography>
+                              </td>
+                            </tr>
+                          );
+                        }
+                      )
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan="11"
+                        className="py-3 px-5 text-center text-blue-gray-500"
+                      >
+                        No data available
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </CardBody>
         )}
       </Card>
 
       {openEditModal && selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4 uppercase">
               Edit {selectedUser.fullName}
             </h2>
@@ -224,81 +297,279 @@ const PeerAmbassador = () => {
               <label className="block text-sm font-medium text-gray-700">
                 Full Name
               </label>
-              <input
+              <Input
                 type="text"
                 value={selectedUser.fullName}
                 onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, fullName: e.target.value })
+                  setSelectedUser({
+                    ...selectedUser,
+                    fullName: e.target.value,
+                  })
                 }
                 className="mt-1 p-2 border border-gray-300 rounded-md w-full"
               />
             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">
-                Email
+                dob
               </label>
-              <input
-                type="email"
-                value={selectedUser.email}
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, email: e.target.value })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Phone
-              </label>
-              <input
+              <Input
                 type="text"
-                value={selectedUser.phone}
+                value={selectedUser.dob.slice(0, 10)}
                 onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, phone: e.target.value })
+                  setSelectedUser({ ...selectedUser, dob: e.target.value })
                 }
                 className="mt-1 p-2 border border-gray-300 rounded-md w-full"
               />
             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">
-                Role
-              </label>
-              <input
-                type="text"
-                value={selectedUser.role}
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, role: e.target.value })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Status
+                Branch of Service
               </label>
               <select
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                value={selectedUser.branchOfService}
                 onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, status: e.target.value })
+                  setSelectedUser({
+                    ...selectedUser,
+                    branchOfService: e.target.value,
+                  })
                 }
-                value={selectedUser.status}
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
               >
-                {/* <option value="active">Active</option> */}
-                <option value="inactive">Inactive</option>
-                <option value="pending">Pending</option>
+                <option value="AirForce">Air Force AFSOC</option>
+                <option value="Army">Army USASOC</option>
+                <option value="Navy">Navy NSW NSO</option>
+                <option value="Marines">Marines MARSOC</option>
               </select>
             </div>
-            <div className="flex justify-end space-x-4">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Contact Method
+              </label>
+              <Input
+                type="text"
+                value={selectedUser.contactMethod}
+                onChange={(e) =>
+                  setSelectedUser({
+                    ...selectedUser,
+                    contactMethod: e.target.value,
+                  })
+                }
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Source
+              </label>
+              <Input
+                type="text"
+                value={selectedUser.howHeardAboutUs}
+                onChange={(e) =>
+                  setSelectedUser({
+                    ...selectedUser,
+                    howHeardAboutUs: e.target.value,
+                  })
+                }
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Reason
+              </label>
+              <Input
+                type="text"
+                value={selectedUser.whyPeerAmbassador}
+                onChange={(e) =>
+                  setSelectedUser({
+                    ...selectedUser,
+                    whyPeerAmbassador: e.target.value,
+                  })
+                }
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                No of Hours/Operators
+              </label>
+              <Input
+                type="text"
+                value={selectedUser.hoursPerMonth}
+                onChange={(e) =>
+                  setSelectedUser({
+                    ...selectedUser,
+                    hoursPerMonth: e.target.value,
+                  })
+                }
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+              />
+              <Input
+                type="text"
+                value={selectedUser.numberOfOperators}
+                onChange={(e) =>
+                  setSelectedUser({
+                    ...selectedUser,
+                    numberOfOperators: e.target.value,
+                  })
+                }
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Organization
+              </label>
+              <Input
+                type="text"
+                value={selectedUser.transitionServices}
+                onChange={(e) =>
+                  setSelectedUser({
+                    ...selectedUser,
+                    transitionServices: e.target.value,
+                  })
+                }
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Support Areas
+              </label>
+              <Input
+                type="text"
+                value={selectedUser.recommendedTransitionServices}
+                onChange={(e) =>
+                  setSelectedUser({
+                    ...selectedUser,
+                    recommendedTransitionServices: e.target.value,
+                  })
+                }
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Topics
+              </label>
+              <Input
+                type="text"
+                value={selectedUser.uncomfortableTopics}
+                onChange={(e) =>
+                  setSelectedUser({
+                    ...selectedUser,
+                    uncomfortableTopics: e.target.value,
+                  })
+                }
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+              />
+            </div>
+            <div className="flex justify-end">
               <Button
-                color="red"
-                variant="outlined"
-                onClick={handleCloseEditModal}
-                size="sm"
+                onClick={handleSaveChanges}
+                className="mr-2"
+                disabled={peersGet.loading}
               >
+                {peersGet.loading ? "Saving..." : "Save Changes"}
+              </Button>
+              <Button onClick={handleCloseEditModal} color="red">
                 Cancel
               </Button>
-              <Button color="green" onClick={handleSaveChanges} size="sm">
-                {usersHook.loading ? "Saving..." : "Save Changes"}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {openViewModal && selectedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4 uppercase">
+              Viewing {selectedUser.fullName}
+            </h2>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Full Name
+              </label>
+              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
+                {selectedUser.fullName}
+              </p>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                DOB
+              </label>
+              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
+                {selectedUser.dob.slice(0, 10)}
+              </p>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Branch of Service
+              </label>
+              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
+                {selectedUser.branchOfService}
+              </p>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Contact Method
+              </label>
+              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
+                {selectedUser.contactMethod}
+              </p>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Source
+              </label>
+              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
+                {selectedUser.howHeardAboutUs}
+              </p>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Reason
+              </label>
+              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
+                {selectedUser.whyPeerAmbassador}
+              </p>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                No of Hours/Operators
+              </label>
+              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
+                {selectedUser.hoursPerMonth} / {selectedUser.numberOfOperators}
+              </p>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Organization
+              </label>
+              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
+                {selectedUser.transitionServices}
+              </p>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Support Areas
+              </label>
+              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
+                {selectedUser.recommendedTransitionServices}
+              </p>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Topics
+              </label>
+              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
+                {selectedUser.uncomfortableTopics}
+              </p>
+            </div>
+            <div className="flex justify-end">
+              <Button onClick={handleCloseViewModal} className="mr-2">
+                Close
               </Button>
             </div>
           </div>

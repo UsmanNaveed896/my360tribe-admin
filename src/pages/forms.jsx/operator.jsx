@@ -84,11 +84,12 @@ const Operator = () => {
   };
 
   const handleSaveChanges = () => {
-    getOperatorksHook.handleEditOperator(selectedUser);
+    console.log(selectedUser, "users");
+    getOperatorksHook.handleEditOperatorForm(selectedUser);
   };
 
   const handleDelete = (id) => {
-    getOperatorksHook.handleDeleteOperator(id);
+    getOperatorksHook.handleDelete(id);
   };
 
   return (
@@ -195,16 +196,18 @@ const Operator = () => {
                               </Typography>
                             </td>
                             <td className={className}>
-                              <Chip
-                                variant="gradient"
-                                color={
-                                  currentlyEmployed === true ? "red" : "green"
-                                }
-                                value={
-                                  currentlyEmployed === true ? "Yes" : "No"
-                                }
-                                className="py-0.5 px-2 text-[11px] font-medium w-fit"
-                              />
+                              <div className="flex justify-start">
+                                <Chip
+                                  variant="gradient"
+                                  color={
+                                    currentlyEmployed === true ? "red" : "green"
+                                  }
+                                  value={
+                                    currentlyEmployed === true ? "Yes" : "No"
+                                  }
+                                  className="py-0.5 px-2 text-[11px] font-medium w-fit"
+                                />
+                              </div>
                             </td>
                             <td className={className}>
                               <Typography className="text-xs font-semibold text-blue-gray-600 uppercase">
@@ -311,7 +314,7 @@ const Operator = () => {
               </label>
               <input
                 type="text"
-                value={selectedUser.DOB}
+                value={selectedUser.DOB.slice(0, 10)}
                 onChange={(e) =>
                   setSelectedUser({ ...selectedUser, DOB: e.target.value })
                 }
@@ -323,7 +326,7 @@ const Operator = () => {
                 Department
               </label>
               <select
-                className="w-full mt-5 py-2 bg-[#152252] border text-[#fff] rounded text-[#9ca3af] pl-2"
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 value={selectedBranch}
                 onChange={handleBranchChange}
               >
@@ -338,13 +341,13 @@ const Operator = () => {
                 Sub Domain
               </label>
               <select
-                className="w-full mt-5 py-2 bg-[#152252] border text-[#fff] rounded text-[#9ca3af] pl-2"
+                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
                 value={selectedUser.EOD}
                 onChange={handleSubDomainChange}
               >
                 {branchOptions?.map((option, index) => (
-                  <option key={index} value={option}>
-                    {option}
+                  <option className="truncate" key={index} value={option}>
+                    {option.slice(0, 33)}
                   </option>
                 ))}
               </select>
@@ -353,17 +356,8 @@ const Operator = () => {
               <label className="block text-sm font-medium text-gray-700">
                 Employed
               </label>
-              <input
-                type="checkbox"
-                checked={selectedUser.currentlyEmployed}
-                onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    currentlyEmployed: e.target.checked,
-                  })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
+
+              <p>{selectedUser.currentlyEmployed == true ? "Yes" : "No"}</p>
             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">
@@ -449,12 +443,7 @@ const Operator = () => {
               <label className="block text-sm font-medium text-gray-700">
                 Employed
               </label>
-              <input
-                type="checkbox"
-                checked={selectedUser.currentlyEmployed}
-                readOnly
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
+              <p>{selectedUser.currentlyEmployed == true ? "Yes" : "No"}</p>
             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">
