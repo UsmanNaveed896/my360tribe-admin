@@ -30,8 +30,8 @@ const dailySalesChart = {
   height: 220,
   series: [
     {
-      name: "Sales",
-      data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
+      name: "",
+      data: [5, 15, 10, 20, 30, 25, 35, 40, 50],
     },
   ],
   options: {
@@ -66,7 +66,7 @@ const completedTaskChart = {
   series: [
     {
       name: "Sales",
-      data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
+      data: [5, 15, 10, 20, 30, 25, 35, 40, 50],
     },
   ],
   options: {
@@ -99,7 +99,7 @@ const completedTasksChart = {
   series: [
     {
       name: "Tasks",
-      data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+      data: [5, 15, 10, 20, 30, 25, 35, 40, 50],
     },
   ],
 };
@@ -107,24 +107,49 @@ const completedTasksChart = {
 export const statisticsChartsData = [
   {
     color: "white",
-    title: "Users Requests Weekly",
+    title: "Users",
+    chart: websiteViewsChart,
+    roles: ["superAdmin"], 
+  },
+  {
+    color: "white",
+    title: "Operators",
+    // description: "15% increase in today sales",
+    // footer: "updated 4 min ago",
+    chart: dailySalesChart,
+    roles: ["superAdmin"], 
+  },
+  {
+    color: "white",
+    title: "Concierge",
+    // description: "Last Campaign Performance",
+    // footer: "just updated",
+    chart: completedTasksChart,
+    roles: ["superAdmin"], 
+  },
+  {
+    color: "white",
+    title: "Peer Ambassador",
     // description: "Last Campaign Performance",
     // footer: "campaign sent 2 days ago",
     chart: websiteViewsChart,
+    roles: ["superAdmin"], 
   },
   {
     color: "white",
-    title: "Daily Activity",
-    description: "15% increase in today sales",
-    footer: "updated 4 min ago",
+    title: "Service Partner",
+    // description: "15% increase in today sales",
+    // footer: "updated 4 min ago",
     chart: dailySalesChart,
+    roles: ["superAdmin"], 
   },
   {
     color: "white",
-    title: "Completed Tasks",
-    description: "Last Campaign Performance",
-    footer: "just updated",
-    chart: completedTasksChart,
+    title: "Operators",
+    // description: "15% increase in today sales",
+    // footer: "updated 4 min ago",
+    chart: dailySalesChart,
+    roles: ["operator"], 
   },
 ];
 

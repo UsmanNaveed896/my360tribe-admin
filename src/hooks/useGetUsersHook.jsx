@@ -32,10 +32,33 @@ export const useGetUsersHook = () => {
       .catch((err) => {
         setLoading(false);
         console.log("err", err);
-        toast.error(err?.response?.data?.message);
+        // toast.error(err?.response?.data?.message);
       });
   };
 
+  const handleCreateUsers = (data) => {
+    setLoading(true);
+    setLoginResponse(false)
+
+    axios
+      .post("https://backend-api.my360tribe.org/api/v1/users/signup", data)
+      .then((res) => {
+        console.log(res, "response");
+        if (res?.status == 201) {
+          toast.success("User Created Successfully");
+          setLoginResponse(true)
+          setLoading(false);
+        } else {
+          toast.error(res?.message);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log("err", err);
+        toast.error(err?.response?.data?.message);
+      });
+  };
   const handleEditUsers = (data) => {
     setLoginResponse(false)
     setLoading(true);
@@ -43,7 +66,7 @@ export const useGetUsersHook = () => {
       Authorization: "Bearer " + token,
     };
     axios
-      .patch(`https://backend-api.my360tribe.org/api/v1/users/${data._id}`,data,{headers})
+      .patch(`https://backend-api.my360tribe.org/api/v1/users/${data.id}`,data,{headers})
       .then((res) => {
   
         if (res?.status == 200) {
@@ -94,6 +117,7 @@ export const useGetUsersHook = () => {
     handleGetUsers,
     handleEditUsers,
     handleDelete,
+    handleCreateUsers,
     usersCount,
     users,
     loading,

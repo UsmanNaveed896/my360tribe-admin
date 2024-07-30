@@ -136,7 +136,7 @@ const ServicePartners = () => {
           </div>
         ) : (
           <CardBody className="px-0 pt-0 pb-2">
-            <div style={{ height: 400, width: '100%' }}>
+            <div style={{ height: 500, width: '100%' }}>
               <DataGrid rows={rows} columns={columns} pageSize={5} />
             </div>
           </CardBody>

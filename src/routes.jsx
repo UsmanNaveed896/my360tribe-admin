@@ -22,7 +22,7 @@ const icon = {
 
 const routes = () => {
   const { auth, role } = useContext(AuthContext);
-console.log(role,"role")
+
   return [
     {
       layout: 'dashboard',
@@ -38,16 +38,16 @@ console.log(role,"role")
           name: 'Users',
           path: '/users',
           element: <Tables />,
-          condition: role === 'superAdmin' || role === 'admin',
+          condition: role === 'superAdmin',
        
         },
-        {
-          icon: <InformationCircleIcon {...icon} />,
-          name: 'Permissions',
-          path: '/roles',
-          element: <Permissions />,
-          condition: role === 'admin',
-        },
+        // {
+        //   icon: <InformationCircleIcon {...icon} />,
+        //   name: 'Permissions',
+        //   path: '/roles',
+        //   element: <Permissions />,
+        //   condition: role === 'superAdmin',
+        // },
         {
           icon: <TableCellsIcon {...icon} />,
           name: 'Operators',
@@ -65,14 +65,14 @@ console.log(role,"role")
         {
           icon: <MdSupervisedUserCircle {...icon} />,
           name: 'Peer Ambassador',
-          path: '/peer-ambassador',
+          path: '/peerAmbassador',
           element: <PeerAmbassador />,
           condition: role === 'superAdmin' || role === 'peerAmbassador' || role === 'admin',
         },
         {
           icon: <FaUsers {...icon} />,
           name: 'Service Partners',
-          path: '/service-partner',
+          path: '/servicePartner',
           element: <ServicePartners />,
           condition: role === 'superAdmin' || role === 'servicePartner' || role === 'admin',
 

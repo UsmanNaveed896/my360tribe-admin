@@ -103,6 +103,7 @@ const PeerAmbassador = () => {
   const rows =
     peersGet?.getPeerAmbassador?.map((item, index) => ({
       id: index,
+      dob:item?.dob?.slice(0,10),
       ...item,
     })) || [];
 
@@ -128,7 +129,7 @@ const PeerAmbassador = () => {
           </div>
         ) : (
           <CardBody className="px-0 pt-0 pb-2">
-            <div style={{ height: 400, width: "100%" }}>
+            <div style={{ height: 500, width: "100%" }}>
               <DataGrid rows={rows} columns={columns} pageSize={5} rowHeight={80} />
             </div>
           </CardBody>

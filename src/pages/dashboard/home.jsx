@@ -1,75 +1,84 @@
-import React, { useEffect } from "react";
-import {
-  Typography,
-  Card,
-  CardHeader,
-  CardBody,
-  IconButton,
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-  Avatar,
-  Tooltip,
-  Progress,
-} from "@material-tailwind/react";
-import {
-  EllipsisVerticalIcon,
-  ArrowUpIcon,
-} from "@heroicons/react/24/outline";
+import React, { useContext, useEffect } from "react";
+import { Typography } from "@material-tailwind/react";
 import { StatisticsCard } from "@/widgets/cards";
 import { StatisticsChart } from "@/widgets/charts";
-import {
-  statisticsCardsData,
-  statisticsChartsData,
-  projectsTableData,
-  ordersOverviewData,
-} from "@/data";
+import { statisticsCardsData, statisticsChartsData } from "@/data";
 import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 import { useGetUsersHook } from "@/hooks/useGetUsersHook";
 import { useGetConciergeHook } from "@/hooks/useGetConciergeHook";
 import { useGetOperatorHook } from "@/hooks/useGetOperatorHook";
 import { useGetPeerAmbassadorHook } from "@/hooks/useGetPeerAmbassadorHook";
 import { useServicePartnerHook } from "@/hooks/useServicePartners";
+import { AuthContext } from "../auth/authecontext";
 
 export function Home() {
-  const users=useGetUsersHook();
-  const concierge=useGetConciergeHook();
-  const operators=useGetOperatorHook();
-  const peers=useGetPeerAmbassadorHook();
-  const partnersCount=useServicePartnerHook();
-  useEffect(()=>{
-  users.handleGetUsers();
-  concierge.handleGetConcierge();
-  operators.handleGetOperator();
-  peers.handleGetPeerAmbassador();
-  partnersCount.handleGetServicePartner();
-  },[])
+  const { auth, role } = useContext(AuthContext);
+  console.log(role, "role");
 
-  const countsArray = [
-    users?.usersCount,
-    concierge?.conciergeCount,
-    operators?.operatorCount,
-    peers?.peerCount,
-    partnersCount.partnersCount
-  ];
-  console.log(users.usersCount,"count")
-  console.log(concierge.conciergeCount,"concirgecount")
-  console.log(operators.operatorCount,"operatorcount")
-  console.log(peers.peerCount,"peercount")
-  console.log(partnersCount.partnersCount,"peercount")
+  const users = useGetUsersHook();
+  const concierge = useGetConciergeHook();
+  const operators = useGetOperatorHook();
+  const peers = useGetPeerAmbassadorHook();
+  const partnersCount = useServicePartnerHook();
 
+  useEffect(() => {
+    if (role === "superAdmin") {
+      users.handleGetUsers();
+      concierge.handleGetConcierge();
+      operators.handleGetOperator();
+      peers.handleGetPeerAmbassador();
+      partnersCount.handleGetServicePartner();
+    } else if (role === "operator") {
+      operators.handleGetOperator();
+    }
+  }, [role]);
 
+  const filteredCardsData = statisticsCardsData.filter(card =>
+    card.roles ? card.roles.includes(role) : true
+  );
+  const filteredChartsData = statisticsChartsData.filter(chart =>
+    chart.roles ? chart.roles.includes(role) : true
+  );
 
+  let countsArray = [];
+  let titlesArray = [];
+
+  if (role === "superAdmin") {
+    countsArray = [
+      users?.usersCount,
+      concierge?.conciergeCount,
+      operators?.operatorCount,
+      peers?.peerCount,
+      partnersCount.partnersCount,
+    ];
+    titlesArray = [
+      "Total Users",
+      "Total Concierges",
+      "Total Operators",
+      "Total Peers",
+      "Total Partners",
+    ];
+  } else if (role === "operator") {
+    const employedCount = operators?.getOperators?.filter(item => item.currentlyEmployed === true).length;
+    countsArray = [
+      operators?.operatorCount,
+      employedCount
+    ];
+    titlesArray = [
+      "Total Operators",
+      "Employed"
+    ];
+  }
+console.log()
   return (
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
-        {statisticsCardsData.map(({ icon, title, footer, ...rest },index) => (
+        {filteredCardsData.map(({ icon, title, footer, ...rest }, index) => (
           <StatisticsCard
             key={title}
             {...rest}
             value={countsArray[index]}
-            title={title}
+            title={titlesArray[index]} // Use titlesArray based on the role
             icon={React.createElement(icon, {
               className: "w-6 h-6 text-white",
             })}
@@ -83,7 +92,7 @@ export function Home() {
         ))}
       </div>
       <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-        {statisticsChartsData.map((props) => (
+        {filteredChartsData.map((props) => (
           <StatisticsChart
             key={props.title}
             {...props}
@@ -92,199 +101,16 @@ export function Home() {
                 variant="small"
                 className="flex items-center font-normal text-blue-gray-600"
               >
-                <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />
+                <ClockIcon
+                  strokeWidth={2}
+                  className="h-4 w-4 text-blue-gray-400"
+                />
                 &nbsp;{props.footer}
               </Typography>
             }
           />
         ))}
       </div>
-      {/* <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">
-          <CardHeader
-            floated={false}
-            shadow={false}
-            color="transparent"
-            className="m-0 flex items-center justify-between p-6"
-          >
-            <div>
-              <Typography variant="h6" color="blue-gray" className="mb-1">
-                Projects
-              </Typography>
-              <Typography
-                variant="small"
-                className="flex items-center gap-1 font-normal text-blue-gray-600"
-              >
-                <CheckCircleIcon strokeWidth={3} className="h-4 w-4 text-blue-gray-200" />
-                <strong>30 done</strong> this month
-              </Typography>
-            </div>
-            <Menu placement="left-start">
-              <MenuHandler>
-                <IconButton size="sm" variant="text" color="blue-gray">
-                  <EllipsisVerticalIcon
-                    strokeWidth={3}
-                    fill="currenColor"
-                    className="h-6 w-6"
-                  />
-                </IconButton>
-              </MenuHandler>
-              <MenuList>
-                <MenuItem>Action</MenuItem>
-                <MenuItem>Another Action</MenuItem>
-                <MenuItem>Something else here</MenuItem>
-              </MenuList>
-            </Menu>
-          </CardHeader>
-          <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-            <table className="w-full min-w-[640px] table-auto">
-              <thead>
-                <tr>
-                  {["companies", "members", "budget", "completion"].map(
-                    (el) => (
-                      <th
-                        key={el}
-                        className="border-b border-blue-gray-50 py-3 px-6 text-left"
-                      >
-                        <Typography
-                          variant="small"
-                          className="text-[11px] font-medium uppercase text-blue-gray-400"
-                        >
-                          {el}
-                        </Typography>
-                      </th>
-                    )
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {projectsTableData.map(
-                  ({ img, name, members, budget, completion }, key) => {
-                    const className = `py-3 px-5 ${
-                      key === projectsTableData.length - 1
-                        ? ""
-                        : "border-b border-blue-gray-50"
-                    }`;
-
-                    return (
-                      <tr key={name}>
-                        <td className={className}>
-                          <div className="flex items-center gap-4">
-                            <Avatar src={img} alt={name} size="sm" />
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-bold"
-                            >
-                              {name}
-                            </Typography>
-                          </div>
-                        </td>
-                        <td className={className}>
-                          {members.map(({ img, name }, key) => (
-                            <Tooltip key={name} content={name}>
-                              <Avatar
-                                src={img}
-                                alt={name}
-                                size="xs"
-                                variant="circular"
-                                className={`cursor-pointer border-2 border-white ${
-                                  key === 0 ? "" : "-ml-2.5"
-                                }`}
-                              />
-                            </Tooltip>
-                          ))}
-                        </td>
-                        <td className={className}>
-                          <Typography
-                            variant="small"
-                            className="text-xs font-medium text-blue-gray-600"
-                          >
-                            {budget}
-                          </Typography>
-                        </td>
-                        <td className={className}>
-                          <div className="w-10/12">
-                            <Typography
-                              variant="small"
-                              className="mb-1 block text-xs font-medium text-blue-gray-600"
-                            >
-                              {completion}%
-                            </Typography>
-                            <Progress
-                              value={completion}
-                              variant="gradient"
-                              color={completion === 100 ? "green" : "blue"}
-                              className="h-1"
-                            />
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
-              </tbody>
-            </table>
-          </CardBody>
-        </Card>
-        <Card className="border border-blue-gray-100 shadow-sm">
-          <CardHeader
-            floated={false}
-            shadow={false}
-            color="transparent"
-            className="m-0 p-6"
-          >
-            <Typography variant="h6" color="blue-gray" className="mb-2">
-              Orders Overview
-            </Typography>
-            <Typography
-              variant="small"
-              className="flex items-center gap-1 font-normal text-blue-gray-600"
-            >
-              <ArrowUpIcon
-                strokeWidth={3}
-                className="h-3.5 w-3.5 text-green-500"
-              />
-              <strong>24%</strong> this month
-            </Typography>
-          </CardHeader>
-          <CardBody className="pt-0">
-            {ordersOverviewData.map(
-              ({ icon, color, title, description }, key) => (
-                <div key={title} className="flex items-start gap-4 py-3">
-                  <div
-                    className={`relative p-1 after:absolute after:-bottom-6 after:left-2/4 after:w-0.5 after:-translate-x-2/4 after:bg-blue-gray-50 after:content-[''] ${
-                      key === ordersOverviewData.length - 1
-                        ? "after:h-0"
-                        : "after:h-4/6"
-                    }`}
-                  >
-                    {React.createElement(icon, {
-                      className: `!w-5 !h-5 ${color}`,
-                    })}
-                  </div>
-                  <div>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="block font-medium"
-                    >
-                      {title}
-                    </Typography>
-                    <Typography
-                      as="span"
-                      variant="small"
-                      className="text-xs font-medium text-blue-gray-500"
-                    >
-                      {description}
-                    </Typography>
-                  </div>
-                </div>
-              )
-            )}
-          </CardBody>
-        </Card>
-      </div> */}
     </div>
   );
 }

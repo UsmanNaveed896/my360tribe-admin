@@ -10,9 +10,9 @@ export const statisticsCardsData = [
     value: "2,300",
     footer: {
       color: "text-green-500",
-      // value: "+3%",
       label: "Users",
     },
+    roles: ["superAdmin"], 
   },
   {
     color: "gray",
@@ -21,9 +21,9 @@ export const statisticsCardsData = [
     value: "$53k",
     footer: {
       color: "text-green-500",
-      // value: "+55%",
       label: "Concierge",
     },
+    roles: ["superAdmin"], 
   },
   {
     color: "gray",
@@ -32,9 +32,9 @@ export const statisticsCardsData = [
     value: "$120k",
     footer: {
       color: "text-red-500",
-      // value: "-10%",
       label: "Operators",
     },
+    roles: ["superAdmin"], 
   },
   {
     color: "gray",
@@ -43,8 +43,41 @@ export const statisticsCardsData = [
     value: "340",
     footer: {
       color: "text-blue-500",
-      // value: "+20%",
       label: "Peer Ambassadors",
     },
+    roles: ["superAdmin"], 
+  },
+  {
+    color: "gray",
+    icon: MdSupervisedUserCircle,
+    title: "Service Partners",
+    value: "340",
+    footer: {
+      color: "text-blue-500",
+      label: "Service Partners",
+    },
+    roles: ["superAdmin"], 
+  },
+  {
+    color: "gray",
+    icon: TableCellsIcon,
+    title: "Operators",
+    value: "$120k",
+    footer: {
+      color: "text-red-500",
+      label: "Operators",
+    },
+    roles: ["operator"], 
+  },
+  {
+    color: "gray",
+    icon: TableCellsIcon,
+    title: "Currently Employed",
+    value: "$120k",
+    footer: {
+      color: "text-red-500",
+      label: "Operators",
+    },
+    roles: ["operator"], 
   },
 ];
