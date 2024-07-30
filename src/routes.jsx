@@ -60,7 +60,7 @@ console.log(role,"role")
           name: 'Conceirge',
           path: '/conceirge',
           element: <Conceirge />,
-          condition: role === 'superAdmin' || role === 'conceirge' || role === 'admin',
+          condition: role === 'superAdmin' || role === 'concierge' || role === 'admin',
         },
         {
           icon: <MdSupervisedUserCircle {...icon} />,
