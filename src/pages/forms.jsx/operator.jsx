@@ -96,7 +96,7 @@ const Operator = () => {
     { field: 'airForceAfSoc', headerName: 'Department', width: 200 },
     { field: 'EOD', headerName: 'Sub Domain', width: 200 },
     { field: 'currentlyEmployed', headerName: 'Employed', width: 150, renderCell: (params) => (
-      <Typography className="text-xs font-semibold text-blue-gray-600 mt-4">
+      <Typography className="text-xs font-semibold text-blue-gray-600 mt-7">
         {params.value ? 'Yes' : 'No'}
       </Typography>
     )},
@@ -144,7 +144,7 @@ const Operator = () => {
           </div>
         ) : (
           <CardBody className="px-0 pt-0 pb-2">
-            <div style={{ height: 400, width: '100%' }}>
+            <div style={{ height: 500, width: '100%' }}>
               <DataGrid rows={rows} columns={columns} pageSize={5}  rowHeight={80}/>
             </div>
           </CardBody>
