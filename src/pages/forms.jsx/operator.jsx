@@ -4,15 +4,13 @@ import {
   CardHeader,
   CardBody,
   Typography,
-  Chip,
   Button,
-  Input,
-  Select,
-  Option,
 } from "@material-tailwind/react";
-import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
+import { DataGrid } from '@mui/x-data-grid';
 import { Puff } from "react-loader-spinner";
 import { useGetOperatorHook } from "@/hooks/useGetOperatorHook";
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, CircularProgress } from '@mui/material';
+import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 
 const Operator = () => {
   const getOperatorksHook = useGetOperatorHook();
@@ -42,7 +40,7 @@ const Operator = () => {
 
   useEffect(() => {
     getOperatorksHook.handleGetOperator();
-  }, []);
+  }, [getOperatorksHook.loginResponse]);
 
   useEffect(() => {
     if (selectedUser) {
@@ -84,13 +82,45 @@ const Operator = () => {
   };
 
   const handleSaveChanges = () => {
-    console.log(selectedUser, "users");
     getOperatorksHook.handleEditOperatorForm(selectedUser);
+    handleCloseEditModal();
   };
 
   const handleDelete = (id) => {
     getOperatorksHook.handleDelete(id);
   };
+
+  const columns = [
+    { field: 'fullName', headerName: 'Full Name', width: 200 },
+    { field: 'DOB', headerName: 'DOB', width: 150 },
+    { field: 'airForceAfSoc', headerName: 'Department', width: 200 },
+    { field: 'EOD', headerName: 'Sub Domain', width: 200 },
+    { field: 'currentlyEmployed', headerName: 'Employed', width: 150, renderCell: (params) => (
+      <Typography className="text-xs font-semibold text-blue-gray-600 mt-4">
+        {params.value ? 'Yes' : 'No'}
+      </Typography>
+    )},
+    { field: 'location', headerName: 'Location', width: 200 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 150,
+      renderCell: (params) => (
+        <div className="flex gap-2 mt-4">
+          <MdVisibility className="cursor-pointer w-5 h-5" onClick={() => handleOpenViewModal(params.row)} />
+          <MdEdit className="cursor-pointer w-5 h-5" onClick={() => handleOpenEditModal(params.row)} />
+          <MdDelete className="cursor-pointer w-5 h-5" onClick={() => handleDelete(params.row._id)} />
+        </div>
+      )
+    }
+  ];
+
+  const rows = getOperatorksHook.getOperators?.map((operator, index) => ({
+    ...operator,
+    id: operator._id,
+    fullName: `${operator.firstName} ${operator.lastName}`,
+    DOB:operator?.DOB?.slice(0,10)
+  }));
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -114,356 +144,135 @@ const Operator = () => {
           </div>
         ) : (
           <CardBody className="px-0 pt-0 pb-2">
-            <table className="w-full min-w-[640px] table-auto">
-              <thead>
-                <tr>
-                  {[
-                    "Full Name",
-                    "DOB",
-                    "Department",
-                    "Sub Domain",
-                    "Employed",
-                    "Location",
-                    "Actions",
-                  ].map((el) => (
-                    <th
-                      key={el}
-                      className="border-b border-blue-gray-50 py-3 px-5 text-left"
-                    >
-                      <Typography
-                        variant="small"
-                        className="text-[11px] font-bold uppercase text-blue-gray-400"
-                      >
-                        {el}
-                      </Typography>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {getOperatorksHook?.getOperators?.length > 0 ? (
-                  getOperatorksHook?.getOperators
-                    ?.slice()
-                    ?.reverse()
-                    ?.map(
-                      (
-                        {
-                          firstName,
-                          lastName,
-                          airForceAfSoc,
-                          EOD,
-                          currentlyEmployed,
-                          location,
-                          DOB,
-                          _id,
-                        },
-                        key
-                      ) => {
-                        const className = `py-3 px-5 ${
-                          key === getOperatorksHook?.getOperators?.length - 1
-                            ? ""
-                            : "border-b border-blue-gray-50"
-                        }`;
-
-                        return (
-                          <tr key={_id}>
-                            <td className={className}>
-                              <div className="flex items-center gap-4">
-                                <div>
-                                  <Typography
-                                    variant="small"
-                                    color="blue-gray"
-                                    className="font-semibold"
-                                  >
-                                    {firstName + " " + lastName}
-                                  </Typography>
-                                </div>
-                              </div>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600">
-                                {DOB.slice(0, 10)}
-                              </Typography>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600">
-                                {airForceAfSoc}
-                              </Typography>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600 uppercase">
-                                {EOD}
-                              </Typography>
-                            </td>
-                            <td className={className}>
-                              <div className="flex justify-start">
-                                <Chip
-                                  variant="gradient"
-                                  color={
-                                    currentlyEmployed === true ? "red" : "green"
-                                  }
-                                  value={
-                                    currentlyEmployed === true ? "Yes" : "No"
-                                  }
-                                  className="py-0.5 px-2 text-[11px] font-medium w-fit"
-                                />
-                              </div>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600 uppercase">
-                                {location}
-                              </Typography>
-                            </td>
-                            <td
-                              className={className}
-                              style={{ display: "flex", gap: "6px" }}
-                            >
-                              <Typography
-                                as="a"
-                                href="#"
-                                className="text-xs font-semibold text-blue-gray-600"
-                                onClick={() =>
-                                  handleOpenViewModal({
-                                    firstName,
-                                    lastName,
-                                    airForceAfSoc,
-                                    EOD,
-                                    currentlyEmployed,
-                                    location,
-                                    DOB,
-                                    _id,
-                                  })
-                                }
-                              >
-                                <MdVisibility className="h-4 w-4" />
-                              </Typography>
-                              <Typography
-                                as="a"
-                                href="#"
-                                className="text-xs font-semibold text-blue-gray-600"
-                                onClick={() =>
-                                  handleOpenEditModal({
-                                    firstName,
-                                    lastName,
-                                    airForceAfSoc,
-                                    EOD,
-                                    currentlyEmployed,
-                                    location,
-                                    DOB,
-                                    _id,
-                                  })
-                                }
-                              >
-                                <MdEdit className="h-4 w-4" />
-                              </Typography>
-                              <Typography
-                                as="a"
-                                href="#"
-                                className="text-xs font-semibold text-blue-gray-600"
-                                onClick={() => handleDelete(_id)}
-                              >
-                                <MdDelete className="h-4 w-4" />
-                              </Typography>
-                            </td>
-                          </tr>
-                        );
-                      }
-                    )
-                ) : (
-                  <tr>
-                    <td
-                      colSpan="7"
-                      className="py-3 px-5 text-center text-blue-gray-500"
-                    >
-                      No data available
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+            <div style={{ height: 400, width: '100%' }}>
+              <DataGrid rows={rows} columns={columns} pageSize={5}  rowHeight={80}/>
+            </div>
           </CardBody>
         )}
       </Card>
 
-      {openEditModal && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4 uppercase">
-              Edit {selectedUser.firstName + " " + selectedUser.lastName}
-            </h2>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <input
-                type="text"
-                value={selectedUser.firstName + " " + selectedUser.lastName}
-                onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    firstName: e.target.value.split(" ")[0],
-                    lastName: e.target.value.split(" ")[1],
-                  })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                DOB
-              </label>
-              <input
-                type="text"
-                value={selectedUser.DOB.slice(0, 10)}
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, DOB: e.target.value })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Department
-              </label>
-              <select
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                value={selectedBranch}
-                onChange={handleBranchChange}
-              >
-                <option value="AirForce">Air Force AFSOC</option>
-                <option value="Army">Army USASOC</option>
-                <option value="Marines">Marines MARSOC</option>
-                <option value="Navy">Navy NSW NSO</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Sub Domain
-              </label>
-              <select
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-                value={selectedUser.EOD}
-                onChange={handleSubDomainChange}
-              >
-                {branchOptions?.map((option, index) => (
-                  <option className="truncate" key={index} value={option}>
-                    {option.slice(0, 33)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Employed
-              </label>
+      {/* Edit Modal */}
+      <Dialog open={openEditModal} onClose={handleCloseEditModal}>
+        <DialogTitle>Edit Operator</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Full Name"
+            value={selectedUser?.firstName + " " + selectedUser?.lastName}
+            onChange={(e) =>
+              setSelectedUser({
+                ...selectedUser,
+                firstName: e.target.value.split(" ")[0],
+                lastName: e.target.value.split(" ")[1],
+              })
+            }
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="DOB"
+            value={selectedUser?.DOB.slice(0, 10)}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, DOB: e.target.value })
+            }
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Department"
+            select
+            value={selectedBranch}
+            onChange={handleBranchChange}
+            fullWidth
+            margin="dense"
+          >
+            <MenuItem value="AirForce">Air Force AFSOC</MenuItem>
+            <MenuItem value="Army">Army USASOC</MenuItem>
+            <MenuItem value="Marines">Marines MARSOC</MenuItem>
+            <MenuItem value="Navy">Navy NSW NSO</MenuItem>
+          </TextField>
+          <TextField
+            label="Sub Domain"
+            select
+            value={selectedUser?.EOD}
+            onChange={handleSubDomainChange}
+            fullWidth
+            margin="dense"
+          >
+            {branchOptions?.map((option, index) => (
+              <MenuItem key={index} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            label="Location"
+            value={selectedUser?.location}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, location: e.target.value })
+            }
+            fullWidth
+            margin="dense"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditModal} variant="outlined" color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleSaveChanges} color="primary">
+            {getOperatorksHook.loading ? <CircularProgress size={24} /> : "Save Changes"}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-              <p>{selectedUser.currentlyEmployed == true ? "Yes" : "No"}</p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Location
-              </label>
-              <input
-                type="text"
-                value={selectedUser.location}
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, location: e.target.value })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="flex justify-end space-x-4">
-              <Button
-                color="red"
-                variant="outlined"
-                onClick={handleCloseEditModal}
-                size="sm"
-              >
-                Cancel
-              </Button>
-              <Button color="green" onClick={handleSaveChanges} size="sm">
-                {getOperatorksHook.loading ? "Saving..." : "Save Changes"}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {openViewModal && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4 uppercase">
-              View {selectedUser.firstName + " " + selectedUser.lastName}
-            </h2>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <input
-                type="text"
-                value={selectedUser.firstName + " " + selectedUser.lastName}
-                readOnly
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                DOB
-              </label>
-              <input
-                type="text"
-                value={selectedUser.DOB}
-                readOnly
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Department
-              </label>
-              <input
-                type="text"
-                value={selectedUser.airForceAfSoc}
-                readOnly
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Sub Domain
-              </label>
-              <input
-                type="text"
-                value={selectedUser.EOD}
-                readOnly
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Employed
-              </label>
-              <p>{selectedUser.currentlyEmployed == true ? "Yes" : "No"}</p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Location
-              </label>
-              <input
-                type="text"
-                value={selectedUser.location}
-                readOnly
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="flex justify-end">
-              <Button color="blue" onClick={handleCloseViewModal} size="sm">
-                Close
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* View Modal */}
+      <Dialog open={openViewModal} onClose={handleCloseViewModal}>
+        <DialogTitle>View Operator</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Full Name"
+            value={selectedUser?.firstName + " " + selectedUser?.lastName}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="DOB"
+            value={selectedUser?.DOB}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="Department"
+            value={selectedUser?.airForceAfSoc}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="Sub Domain"
+            value={selectedUser?.EOD}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="Location"
+            value={selectedUser?.location}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <Typography variant="body2" color="textSecondary">
+            Employed: {selectedUser?.currentlyEmployed ? 'Yes' : 'No'}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseViewModal} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from "react";
 import {
+ 
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+import {
   Card,
   CardHeader,
   CardBody,
   Typography,
+  Textarea,
   Button,
-  Input,
 } from "@material-tailwind/react";
-import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
+import { DataGrid } from "@mui/x-data-grid";
 import { Puff } from "react-loader-spinner";
+import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 
 import { useServicePartnerHook } from "@/hooks/useServicePartners";
 
@@ -20,9 +29,9 @@ const ServicePartners = () => {
 
   useEffect(() => {
     getService.handleGetServicePartner();
-    if(getService.loginResponse){
-      handleCloseEditModal()
-        }
+    if (getService.loginResponse) {
+      handleCloseEditModal();
+    }
   }, [getService.loginResponse]);
 
   const handleOpenEditModal = (user) => {
@@ -53,13 +62,64 @@ const ServicePartners = () => {
   const handleDelete = (id) => {
     getService.handleDelete(id);
   };
-  console.log(getService?.getServicePartner,"kio")
+
+  const columns = [
+    { field: "organizationName", headerName: "Organization Name", width:150 },
+    { field: "phone", headerName: "Phone", width:150 },
+    { field: "address", headerName: "Address", width:150 },
+    {
+      field: "websiteUrl",
+      headerName: "Website",
+      width:150,
+      renderCell: (params) => (
+        <a href={params.value} target="_blank" rel="noopener noreferrer">
+          {params.value}
+        </a>
+      ),
+    },
+    { field: "pointOfContactName", headerName: "Point of Contact", width:150 },
+    { field: "pointOfContactEmail", headerName: "Point of Contact Email", width:150 },
+    { field: "howHeardAboutUs", headerName: "How Heard About Us", width:150 },
+    { field: "veteranSpecificServices", headerName: "Veteran Specific Services", width:150 },
+    { field: "servicesProvided", headerName: "Services Provided", width:150 },
+    { field: "description", headerName: "Description", width:150 },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width:150,
+      renderCell: (params) => (
+        <div className="mt-4" style={{ display: "flex", gap: "6px", }}>
+          <MdVisibility
+          className="w-5 h-5"
+            style={{ cursor: "pointer" }}
+            onClick={() => handleOpenViewModal(params.row)}
+          />
+          <MdEdit
+          className="w-5 h-5"
+            style={{ cursor: "pointer" }}
+            onClick={() => handleOpenEditModal(params.row)}
+          />
+          <MdDelete
+          className="w-5 h-5"
+            style={{ cursor: "pointer" }}
+            onClick={() => handleDelete(params.row._id)}
+          />
+        </div>
+      ),
+    },
+  ];
+
+  const rows = getService?.getServicePartner?.map((service, index) => ({
+    id: index,
+    ...service,
+  })) || [];
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
           <Typography variant="h6" color="white">
-            Organizations
+            Service Partners
           </Typography>
         </CardHeader>
         {getService?.loading ? (
@@ -76,210 +136,20 @@ const ServicePartners = () => {
           </div>
         ) : (
           <CardBody className="px-0 pt-0 pb-2">
-            <table className="w-full min-w-[640px] table-auto">
-              <thead>
-                <tr>
-                  {[
-                    "Organization Name",
-                    "Phone",
-                    "Address",
-                    "Website",
-                    "Point of Contact",
-                    "Point of Contact Email",
-                    "How Heard About Us",
-                    "Veteran Specific Services",
-                    "Services Provided",
-                    "Description",
-                  ].map((el) => (
-                    <th
-                      key={el}
-                      className="border-b border-blue-gray-50 py-3 px-5 text-left"
-                    >
-                      <Typography
-                        variant="small"
-                        className="text-[11px] font-bold uppercase text-blue-gray-400"
-                      >
-                        {el}
-                      </Typography>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {getService?.getServicePartner?.length > 0 ? (
-                  getService?.getServicePartner
-                    ?.slice()
-                    ?.reverse()
-                    ?.map(
-                      (
-                        {
-                          organizationName,
-                          phone,
-                          address,
-                          websiteUrl,
-                          pointOfContactName,
-                          pointOfContactEmail,
-                          howHeardAboutUs,
-                          veteranSpecificServices,
-                          servicesProvided,
-                          description,
-                          _id,
-                        },
-                        key
-                      ) => {
-                        const className = `py-3 px-5 ${
-                          key === getService?.getServicePartner.length - 1
-                            ? ""
-                            : "border-b border-blue-gray-50"
-                        }`;
-
-                        return (
-                          <tr key={_id}>
-                            <td className={className}>
-                              <div className="flex items-center gap-4">
-                                <div>
-                                  <Typography
-                                    variant="small"
-                                    color="blue-gray"
-                                    className="font-semibold"
-                                  >
-                                    {organizationName}
-                                  </Typography>
-                                </div>
-                              </div>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600">
-                                {phone}
-                              </Typography>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600">
-                                {address}
-                              </Typography>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600">
-                                <a href={websiteUrl} target="_blank" rel="noopener noreferrer">
-                                  {websiteUrl}
-                                </a>
-                              </Typography>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600">
-                                {pointOfContactName}
-                              </Typography>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600">
-                                {pointOfContactEmail}
-                              </Typography>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600 uppercase">
-                                {howHeardAboutUs}
-                              </Typography>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600 uppercase">
-                                {veteranSpecificServices}
-                              </Typography>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600 uppercase">
-                                {servicesProvided}
-                              </Typography>
-                            </td>
-                            <td className={className}>
-                              <Typography className="text-xs font-semibold text-blue-gray-600 uppercase">
-                                {description}
-                              </Typography>
-                            </td>
-                            <td
-                              className={className}
-                              style={{ display: "flex", gap: "6px" }}
-                            >
-                              <Typography
-                                as="a"
-                                href="#"
-                                className="text-xs font-semibold text-blue-gray-600"
-                                onClick={() => handleOpenViewModal({
-                                  organizationName,
-                                  phone,
-                                  address,
-                                  websiteUrl,
-                                  pointOfContactName,
-                                  pointOfContactEmail,
-                                  howHeardAboutUs,
-                                  veteranSpecificServices,
-                                  servicesProvided,
-                                  description,
-                                  _id,
-                                })}
-                              >
-                                <MdVisibility className="h-4 w-4" />
-                              </Typography>
-                              <Typography
-                                as="a"
-                                href="#"
-                                className="text-xs font-semibold text-blue-gray-600"
-                                onClick={() => handleOpenEditModal({
-                                  organizationName,
-                                  phone,
-                                  address,
-                                  websiteUrl,
-                                  pointOfContactName,
-                                  pointOfContactEmail,
-                                  howHeardAboutUs,
-                                  veteranSpecificServices,
-                                  servicesProvided,
-                                  description,
-                                  _id,
-                                })}
-                              >
-                                <MdEdit className="h-4 w-4" />
-                              </Typography>
-                              <Typography
-                                as="a"
-                                href="#"
-                                className="text-xs font-semibold text-blue-gray-600"
-                                onClick={() => handleDelete(_id)}
-                              >
-                                <MdDelete className="h-4 w-4" />
-                              </Typography>
-                            </td>
-                          </tr>
-                        );
-                      }
-                    )
-                ) : (
-                  <tr>
-                    <td
-                      colSpan="11"
-                      className="py-3 px-5 text-center text-blue-gray-500"
-                    >
-                      No data available
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+            <div style={{ height: 400, width: '100%' }}>
+              <DataGrid rows={rows} columns={columns} pageSize={5} />
+            </div>
           </CardBody>
         )}
       </Card>
 
-      {openEditModal && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4 uppercase">
-              Edit {selectedUser.organizationName}
-            </h2>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Organization Name
-              </label>
-              <Input
-                type="text"
+      <Dialog open={openEditModal} onClose={handleCloseEditModal}>
+        <DialogTitle>Edit {selectedUser?.organizationName}</DialogTitle>
+        <DialogContent>
+          {selectedUser && (
+            <>
+              <TextField
+                label="Organization Name"
                 value={selectedUser.organizationName}
                 onChange={(e) =>
                   setSelectedUser({
@@ -287,60 +157,38 @@ const ServicePartners = () => {
                     organizationName: e.target.value,
                   })
                 }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                fullWidth
+                margin="dense"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Phone
-              </label>
-              <Input
-                type="text"
+              <TextField
+                label="Phone"
                 value={selectedUser.phone}
                 onChange={(e) =>
                   setSelectedUser({ ...selectedUser, phone: e.target.value })
                 }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                fullWidth
+                margin="dense"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Address
-              </label>
-              <Input
-                type="text"
+              <TextField
+                label="Address"
                 value={selectedUser.address}
                 onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    address: e.target.value,
-                  })
+                  setSelectedUser({ ...selectedUser, address: e.target.value })
                 }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                fullWidth
+                margin="dense"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Website
-              </label>
-              <Input
-                type="text"
+              <TextField
+                label="Website"
                 value={selectedUser.websiteUrl}
                 onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    websiteUrl: e.target.value,
-                  })
+                  setSelectedUser({ ...selectedUser, websiteUrl: e.target.value })
                 }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                fullWidth
+                margin="dense"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Point of Contact
-              </label>
-              <Input
-                type="text"
+              <TextField
+                label="Point of Contact"
                 value={selectedUser.pointOfContactName}
                 onChange={(e) =>
                   setSelectedUser({
@@ -348,15 +196,11 @@ const ServicePartners = () => {
                     pointOfContactName: e.target.value,
                   })
                 }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                fullWidth
+                margin="dense"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Point of Contact Email
-              </label>
-              <Input
-                type="text"
+              <TextField
+                label="Point of Contact Email"
                 value={selectedUser.pointOfContactEmail}
                 onChange={(e) =>
                   setSelectedUser({
@@ -364,15 +208,11 @@ const ServicePartners = () => {
                     pointOfContactEmail: e.target.value,
                   })
                 }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                fullWidth
+                margin="dense"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                How Heard About Us
-              </label>
-              <Input
-                type="text"
+              <TextField
+                label="How Heard About Us"
                 value={selectedUser.howHeardAboutUs}
                 onChange={(e) =>
                   setSelectedUser({
@@ -380,15 +220,11 @@ const ServicePartners = () => {
                     howHeardAboutUs: e.target.value,
                   })
                 }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                fullWidth
+                margin="dense"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Veteran Specific Services
-              </label>
-              <Input
-                type="text"
+              <TextField
+                label="Veteran Specific Services"
                 value={selectedUser.veteranSpecificServices}
                 onChange={(e) =>
                   setSelectedUser({
@@ -396,15 +232,11 @@ const ServicePartners = () => {
                     veteranSpecificServices: e.target.value,
                   })
                 }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                fullWidth
+                margin="dense"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Services Provided
-              </label>
-              <Input
-                type="text"
+              <TextField
+                label="Services Provided"
                 value={selectedUser.servicesProvided}
                 onChange={(e) =>
                   setSelectedUser({
@@ -412,15 +244,11 @@ const ServicePartners = () => {
                     servicesProvided: e.target.value,
                   })
                 }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                fullWidth
+                margin="dense"
               />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Description
-              </label>
-              <Input
-                type="text"
+              <Textarea
+                label="Description"
                 value={selectedUser.description}
                 onChange={(e) =>
                   setSelectedUser({
@@ -428,117 +256,109 @@ const ServicePartners = () => {
                     description: e.target.value,
                   })
                 }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                fullWidth
+                margin="dense"
               />
-            </div>
-            <div className="flex justify-end">
-              <Button onClick={handleSaveChanges} className="mr-2" disabled={getService.loading}>
-              {getService.loading ? "Saving..." : "Save Changes"}  
-              </Button>
-              <Button onClick={handleCloseEditModal} color="red">
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+        <Button variant="outlined" onClick={handleCloseEditModal} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleSaveChanges} disabled={getService.loading}>
+            {getService.loading ? "Saving..." : "Save Changes"}
+          </Button>
+        
+        </DialogActions>
+      </Dialog>
 
-      {openViewModal && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4 uppercase">
-              Viewing {selectedUser.organizationName}
-            </h2>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Organization Name
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.organizationName}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Phone
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.phone}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Address
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.address}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Website
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                <a href={selectedUser.websiteUrl} target="_blank" rel="noopener noreferrer">
-                  {selectedUser.websiteUrl}
-                </a>
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Point of Contact
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.pointOfContactName}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Point of Contact Email
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.pointOfContactEmail}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                How Heard About Us
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.howHeardAboutUs}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Veteran Specific Services
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.veteranSpecificServices}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Services Provided
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.servicesProvided}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Description
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.description}
-              </p>
-            </div>
-            <div className="flex justify-end">
-              <Button onClick={handleCloseViewModal} className="mr-2">
-                Close
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Dialog open={openViewModal} onClose={handleCloseViewModal}>
+        <DialogTitle>Viewing {selectedUser?.organizationName}</DialogTitle>
+        <DialogContent>
+          {selectedUser && (
+            <>
+              <TextField
+                label="Organization Name"
+                value={selectedUser.organizationName}
+                fullWidth
+                margin="dense"
+                readOnly
+              />
+              <TextField
+                label="Phone"
+                value={selectedUser.phone}
+                fullWidth
+                margin="dense"
+                readOnly
+              />
+              <TextField
+                label="Address"
+                value={selectedUser.address}
+                fullWidth
+                margin="dense"
+                readOnly
+              />
+              <TextField
+                label="Website"
+                value={selectedUser.websiteUrl}
+                fullWidth
+                margin="dense"
+                readOnly
+              />
+              <TextField
+                label="Point of Contact"
+                value={selectedUser.pointOfContactName}
+                fullWidth
+                margin="dense"
+                readOnly
+              />
+              <TextField
+                label="Point of Contact Email"
+                value={selectedUser.pointOfContactEmail}
+                fullWidth
+                margin="dense"
+                readOnly
+              />
+              <TextField
+                label="How Heard About Us"
+                value={selectedUser.howHeardAboutUs}
+                fullWidth
+                margin="dense"
+                readOnly
+              />
+              <TextField
+                label="Veteran Specific Services"
+                value={selectedUser.veteranSpecificServices}
+                fullWidth
+                margin="dense"
+                readOnly
+              />
+              <TextField
+                label="Services Provided"
+                value={selectedUser.servicesProvided}
+                fullWidth
+                margin="dense"
+                readOnly
+              />
+              <Textarea
+               className="pt-3"
+                label="Description"
+                value={selectedUser.description}
+                fullWidth
+                margin="dense"
+                readOnly
+              
+              />
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseViewModal} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

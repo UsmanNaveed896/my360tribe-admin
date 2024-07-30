@@ -8,6 +8,7 @@ export const useGetOperatorHook = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [getOperators,setGetOperators]=useState();
+  const [operatorCount,setOperatorCount]=useState();
   const [loginResponse, setLoginResponse] = useState();
   let token = localStorage.getItem("token");
 
@@ -24,6 +25,7 @@ export const useGetOperatorHook = () => {
         console.log(res, "operator");
         if (res?.status == 200) {
           setGetOperators(res?.data?.data?.operatorIntakes)
+          setOperatorCount(res?.data?.results)
           setLoading(false);
         } else {
           toast.error(res?.message);
@@ -91,6 +93,7 @@ export const useGetOperatorHook = () => {
   };
   return {
     handleGetOperator,
+    operatorCount,
     handleEditOperatorForm,
     loading,
     loginResponse,

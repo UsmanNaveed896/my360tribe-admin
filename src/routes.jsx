@@ -57,8 +57,8 @@ console.log(role,"role")
         },
         {
           icon: <MdOutlineReduceCapacity {...icon} />,
-          name: 'Conceirge',
-          path: '/conceirge',
+          name: 'Concierge',
+          path: '/concierge',
           element: <Conceirge />,
           condition: role === 'superAdmin' || role === 'concierge' || role === 'admin',
         },

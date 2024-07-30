@@ -5,11 +5,20 @@ import {
   CardBody,
   Typography,
   Button,
-  Input,
 } from "@material-tailwind/react";
-import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
+import { DataGrid } from "@mui/x-data-grid";
 import { Puff } from "react-loader-spinner";
 import { useGetPeerAmbassadorHook } from "@/hooks/useGetPeerAmbassadorHook";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
+import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 
 const PeerAmbassador = () => {
   const peersGet = useGetPeerAmbassadorHook();
@@ -45,20 +54,64 @@ const PeerAmbassador = () => {
   };
 
   const handleSaveChanges = () => {
-    console.log(selectedUser, "users");
     peersGet.handleEditPeerAmbassadorForm(selectedUser);
+    handleCloseEditModal();
   };
 
   const handleDelete = (id) => {
     peersGet.handleDelete(id);
   };
-  console.log(peersGet.getPeerAmbassador, "peersGet");
+
+  const columns = [
+    { field: "fullName", headerName: "Full Name", width: 150 },
+    { field: "dob", headerName: "DOB", width: 100 },
+    { field: "branchOfService", headerName: "Branch of Service", width: 150 },
+    { field: "contactMethod", headerName: "Contact Method", width: 150 },
+    { field: "howHeardAboutUs", headerName: "Source", width: 150 },
+    { field: "whyPeerAmbassador", headerName: "Reason", width: 150 },
+    { field: "hoursPerMonth", headerName: "No of Hr/Operators", width: 150 },
+    { field: "transitionServices", headerName: "Organization", width: 150 },
+    {
+      field: "recommendedTransitionServices",
+      headerName: "Support Areas",
+      width: 150,
+    },
+    { field: "uncomfortableTopics", headerName: "Topics", width: 150 },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 150,
+      renderCell: (params) => (
+        <div style={{ display: "flex", gap: "6px" }} className="mt-6">
+          <MdVisibility
+            className="w-5 h-5 cursor-pointer"
+            onClick={() => handleOpenViewModal(params.row)}
+          />
+          <MdEdit
+            className="w-5 h-5 cursor-pointer"
+            onClick={() => handleOpenEditModal(params.row)}
+          />
+          <MdDelete
+            className="w-5 h-5 cursor-pointer"
+            onClick={() => handleDelete(params.row._id)}
+          />
+        </div>
+      ),
+    },
+  ];
+
+  const rows =
+    peersGet?.getPeerAmbassador?.map((item, index) => ({
+      id: index,
+      ...item,
+    })) || [];
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
           <Typography variant="h6" color="white">
-            Conceirge
+            Peer Ambassador
           </Typography>
         </CardHeader>
         {peersGet?.loading ? (
@@ -75,506 +128,217 @@ const PeerAmbassador = () => {
           </div>
         ) : (
           <CardBody className="px-0 pt-0 pb-2">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[640px] table-auto">
-                <thead>
-                  <tr>
-                    {[
-                      "Full Name",
-                      "DOB",
-                      "Branch of Service",
-                      "Contact Method",
-                      "Source",
-                      "Reason",
-                      "No of Hr/Operators",
-                      "Organization",
-                      "Support Areas",
-                      "Topics",
-                    ].map((el) => (
-                      <th
-                        key={el}
-                        className="border-b border-blue-gray-50 py-3 px-5 text-left"
-                      >
-                        <Typography
-                          variant="small"
-                          className="text-[11px] font-bold uppercase text-blue-gray-400"
-                        >
-                          {el}
-                        </Typography>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {peersGet?.getPeerAmbassador?.length > 0 ? (
-                    peersGet?.getPeerAmbassador
-                      ?.slice()
-                      ?.reverse()
-                      ?.map(
-                        (
-                          {
-                            fullName,
-                            phone,
-                            email,
-                            branchOfService,
-                            contactMethod,
-                            howHeardAboutUs,
-                            dob,
-                            _id,
-                            whyPeerAmbassador,
-                            hoursPerMonth,
-                            numberOfOperators,
-                            transitionServices,
-                            recommendedTransitionServices,
-                            areasOfSupport,
-                            uncomfortableTopics,
-                          },
-                          key
-                        ) => {
-                          const className = `py-3 px-5 ${
-                            key === peersGet?.getPeerAmbassador?.length - 1
-                              ? ""
-                              : "border-b border-blue-gray-50"
-                          }`;
-
-                          return (
-                            <tr key={_id}>
-                              <td className={className}>
-                                <div className="flex items-center gap-4">
-                                  <div>
-                                    <Typography
-                                      variant="small"
-                                      color="blue-gray"
-                                      className="font-semibold text-xs"
-                                    >
-                                      {fullName}
-                                    </Typography>
-                                    <p className="text-xs">{email}</p>
-                                    <p className="text-xs">{phone}</p>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className={className}>
-                                <Typography className="text-xs  text-blue-gray-600">
-                                  {dob?.slice(0, 10)}
-                                </Typography>
-                              </td>
-                              <td className={className}>
-                                <Typography className="text-xs  text-blue-gray-600">
-                                  {branchOfService}
-                                </Typography>
-                              </td>
-                              <td className={className}>
-                                <div className="flex justify-start">
-                                  <Typography className="text-xs  text-blue-gray-600 ">
-                                    {contactMethod}
-                                  </Typography>
-                                </div>
-                              </td>
-                              <td className={className}>
-                                <Typography className="text-xs  text-blue-gray-600 ">
-                                  {howHeardAboutUs}
-                                </Typography>
-                              </td>
-                              <td className={className}>
-                                <Typography className="text-xs  text-blue-gray-600 ">
-                                  {whyPeerAmbassador}
-                                </Typography>
-                              </td>
-                              <td className={className}>
-                                <Typography className="text-xs  text-blue-gray-600 ">
-                                  {hoursPerMonth} / {numberOfOperators}
-                                </Typography>
-                              </td>
-                              <td className={className}>
-                                <Typography className="text-xs  text-blue-gray-600 ">
-                                  {transitionServices}
-                                </Typography>
-                              </td>
-                              <td className={className}>
-                                <Typography className="text-xs  text-blue-gray-600 ">
-                                  {recommendedTransitionServices}
-                                </Typography>
-                              </td>
-                              <td className={className}>
-                                <Typography className="text-xs  text-blue-gray-600 ">
-                                  {uncomfortableTopics}
-                                </Typography>
-                              </td>
-                              <td
-                                className={className}
-                                style={{ display: "flex", gap: "6px" }}
-                              >
-                                <Typography
-                                  as="a"
-                                  href="#"
-                                  className="text-xs  text-blue-gray-600"
-                                  onClick={() =>
-                                    handleOpenViewModal({
-                                      fullName,
-                                      phone,
-                                      email,
-                                      branchOfService,
-                                      contactMethod,
-                                      howHeardAboutUs,
-                                      dob,
-                                      _id,
-                                      whyPeerAmbassador,
-                                      hoursPerMonth,
-                                      numberOfOperators,
-                                      transitionServices,
-                                      recommendedTransitionServices,
-                                      areasOfSupport,
-                                      uncomfortableTopics,
-                                    })
-                                  }
-                                >
-                                  <MdVisibility className="h-4 w-4" />
-                                </Typography>
-                                <Typography
-                                  as="a"
-                                  href="#"
-                                  className="text-xs font-semibold text-blue-gray-600"
-                                  onClick={() =>
-                                    handleOpenEditModal({
-                                      fullName,
-                                      phone,
-                                      email,
-                                      branchOfService,
-                                      contactMethod,
-                                      howHeardAboutUs,
-                                      dob,
-                                      _id,
-                                      whyPeerAmbassador,
-                                      hoursPerMonth,
-                                      numberOfOperators,
-                                      transitionServices,
-                                      recommendedTransitionServices,
-                                      areasOfSupport,
-                                      uncomfortableTopics,
-                                    })
-                                  }
-                                >
-                                  <MdEdit className="h-4 w-4" />
-                                </Typography>
-                                <Typography
-                                  as="a"
-                                  href="#"
-                                  className="text-xs font-semibold text-blue-gray-600"
-                                  onClick={() => handleDelete(_id)}
-                                >
-                                  <MdDelete className="h-4 w-4" />
-                                </Typography>
-                              </td>
-                            </tr>
-                          );
-                        }
-                      )
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="11"
-                        className="py-3 px-5 text-center text-blue-gray-500"
-                      >
-                        No data available
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+            <div style={{ height: 400, width: "100%" }}>
+              <DataGrid rows={rows} columns={columns} pageSize={5} rowHeight={80} />
             </div>
           </CardBody>
         )}
       </Card>
 
-      {openEditModal && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4 uppercase">
-              Edit {selectedUser.fullName}
-            </h2>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <Input
-                type="text"
-                value={selectedUser.fullName}
-                onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    fullName: e.target.value,
-                  })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                dob
-              </label>
-              <Input
-                type="text"
-                value={selectedUser.dob.slice(0, 10)}
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, dob: e.target.value })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Branch of Service
-              </label>
-              <select
-                value={selectedUser.branchOfService}
-                onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    branchOfService: e.target.value,
-                  })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              >
-                <option value="AirForce">Air Force AFSOC</option>
-                <option value="Army">Army USASOC</option>
-                <option value="Navy">Navy NSW NSO</option>
-                <option value="Marines">Marines MARSOC</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Contact Method
-              </label>
-              <Input
-                type="text"
-                value={selectedUser.contactMethod}
-                onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    contactMethod: e.target.value,
-                  })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Source
-              </label>
-              <Input
-                type="text"
-                value={selectedUser.howHeardAboutUs}
-                onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    howHeardAboutUs: e.target.value,
-                  })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Reason
-              </label>
-              <Input
-                type="text"
-                value={selectedUser.whyPeerAmbassador}
-                onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    whyPeerAmbassador: e.target.value,
-                  })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                No of Hours/Operators
-              </label>
-              <Input
-                type="text"
-                value={selectedUser.hoursPerMonth}
-                onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    hoursPerMonth: e.target.value,
-                  })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-              <Input
-                type="text"
-                value={selectedUser.numberOfOperators}
-                onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    numberOfOperators: e.target.value,
-                  })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Organization
-              </label>
-              <Input
-                type="text"
-                value={selectedUser.transitionServices}
-                onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    transitionServices: e.target.value,
-                  })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Support Areas
-              </label>
-              <Input
-                type="text"
-                value={selectedUser.recommendedTransitionServices}
-                onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    recommendedTransitionServices: e.target.value,
-                  })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Topics
-              </label>
-              <Input
-                type="text"
-                value={selectedUser.uncomfortableTopics}
-                onChange={(e) =>
-                  setSelectedUser({
-                    ...selectedUser,
-                    uncomfortableTopics: e.target.value,
-                  })
-                }
-                className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-            <div className="flex justify-end">
-              <Button
-                onClick={handleSaveChanges}
-                className="mr-2"
-                disabled={peersGet.loading}
-              >
-                {peersGet.loading ? "Saving..." : "Save Changes"}
-              </Button>
-              <Button onClick={handleCloseEditModal} color="red">
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Edit Modal */}
+      <Dialog open={openEditModal} onClose={handleCloseEditModal}>
+        <DialogTitle>Edit Peer Ambassador</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Full Name"
+            value={selectedUser?.fullName || ""}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, fullName: e.target.value })
+            }
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="DOB"
+            value={selectedUser?.dob?.slice(0, 10) || ""}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, dob: e.target.value })
+            }
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Branch of Service"
+            select
+            value={selectedUser?.branchOfService || ""}
+            onChange={(e) =>
+              setSelectedUser({
+                ...selectedUser,
+                branchOfService: e.target.value,
+              })
+            }
+            fullWidth
+            margin="dense"
+          >
+            <MenuItem value="AirForce">Air Force AFSOC</MenuItem>
+            <MenuItem value="Army">Army USASOC</MenuItem>
+            <MenuItem value="Navy">Navy NSW NSO</MenuItem>
+            <MenuItem value="Marines">Marines MARSOC</MenuItem>
+          </TextField>
+          <TextField
+            label="Contact Method"
+            value={selectedUser?.contactMethod || ""}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, contactMethod: e.target.value })
+            }
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Source"
+            value={selectedUser?.howHeardAboutUs || ""}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, howHeardAboutUs: e.target.value })
+            }
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Reason"
+            value={selectedUser?.whyPeerAmbassador || ""}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, whyPeerAmbassador: e.target.value })
+            }
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="No of Hr/Operators"
+            value={selectedUser?.hoursPerMonth || ""}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, hoursPerMonth: e.target.value })
+            }
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Organization"
+            value={selectedUser?.transitionServices || ""}
+            onChange={(e) =>
+              setSelectedUser({
+                ...selectedUser,
+                transitionServices: e.target.value,
+              })
+            }
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Support Areas"
+            value={selectedUser?.recommendedTransitionServices || ""}
+            onChange={(e) =>
+              setSelectedUser({
+                ...selectedUser,
+                recommendedTransitionServices: e.target.value,
+              })
+            }
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Topics"
+            value={selectedUser?.uncomfortableTopics || ""}
+            onChange={(e) =>
+              setSelectedUser({
+                ...selectedUser,
+                uncomfortableTopics: e.target.value,
+              })
+            }
+            fullWidth
+            margin="dense"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEditModal} variant="outlined" color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleSaveChanges} color="primary">
+            {peersGet.loading ? <CircularProgress size={24} /> : "Save Changes"}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-      {openViewModal && selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4 uppercase">
-              Viewing {selectedUser.fullName}
-            </h2>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.fullName}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                DOB
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.dob.slice(0, 10)}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Branch of Service
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.branchOfService}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Contact Method
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.contactMethod}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Source
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.howHeardAboutUs}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Reason
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.whyPeerAmbassador}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                No of Hours/Operators
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.hoursPerMonth} / {selectedUser.numberOfOperators}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Organization
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.transitionServices}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Support Areas
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.recommendedTransitionServices}
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Topics
-              </label>
-              <p className="mt-1 p-2 border border-gray-300 rounded-md w-full">
-                {selectedUser.uncomfortableTopics}
-              </p>
-            </div>
-            <div className="flex justify-end">
-              <Button onClick={handleCloseViewModal} className="mr-2">
-                Close
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* View Modal */}
+      <Dialog open={openViewModal} onClose={handleCloseViewModal}>
+        <DialogTitle>View Peer Ambassador</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Full Name"
+            value={selectedUser?.fullName || ""}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="DOB"
+            value={selectedUser?.dob?.slice(0, 10) || ""}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="Branch of Service"
+            value={selectedUser?.branchOfService || ""}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="Contact Method"
+            value={selectedUser?.contactMethod || ""}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="Source"
+            value={selectedUser?.howHeardAboutUs || ""}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="Reason"
+            value={selectedUser?.whyPeerAmbassador || ""}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="No of Hr/Operators"
+            value={selectedUser?.hoursPerMonth || ""}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="Organization"
+            value={selectedUser?.transitionServices || ""}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="Support Areas"
+            value={selectedUser?.recommendedTransitionServices || ""}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="Topics"
+            value={selectedUser?.uncomfortableTopics || ""}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseViewModal} variant="outlined" color="secondary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Card,
@@ -26,15 +26,49 @@ import {
   ordersOverviewData,
 } from "@/data";
 import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
+import { useGetUsersHook } from "@/hooks/useGetUsersHook";
+import { useGetConciergeHook } from "@/hooks/useGetConciergeHook";
+import { useGetOperatorHook } from "@/hooks/useGetOperatorHook";
+import { useGetPeerAmbassadorHook } from "@/hooks/useGetPeerAmbassadorHook";
+import { useServicePartnerHook } from "@/hooks/useServicePartners";
 
 export function Home() {
+  const users=useGetUsersHook();
+  const concierge=useGetConciergeHook();
+  const operators=useGetOperatorHook();
+  const peers=useGetPeerAmbassadorHook();
+  const partnersCount=useServicePartnerHook();
+  useEffect(()=>{
+  users.handleGetUsers();
+  concierge.handleGetConcierge();
+  operators.handleGetOperator();
+  peers.handleGetPeerAmbassador();
+  partnersCount.handleGetServicePartner();
+  },[])
+
+  const countsArray = [
+    users?.usersCount,
+    concierge?.conciergeCount,
+    operators?.operatorCount,
+    peers?.peerCount,
+    partnersCount.partnersCount
+  ];
+  console.log(users.usersCount,"count")
+  console.log(concierge.conciergeCount,"concirgecount")
+  console.log(operators.operatorCount,"operatorcount")
+  console.log(peers.peerCount,"peercount")
+  console.log(partnersCount.partnersCount,"peercount")
+
+
+
   return (
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
-        {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
+        {statisticsCardsData.map(({ icon, title, footer, ...rest },index) => (
           <StatisticsCard
             key={title}
             {...rest}
+            value={countsArray[index]}
             title={title}
             icon={React.createElement(icon, {
               className: "w-6 h-6 text-white",
@@ -65,7 +99,7 @@ export function Home() {
           />
         ))}
       </div>
-      <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
+      {/* <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
         <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">
           <CardHeader
             floated={false}
@@ -250,7 +284,7 @@ export function Home() {
             )}
           </CardBody>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 }
