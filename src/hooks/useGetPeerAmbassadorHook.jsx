@@ -8,6 +8,7 @@ export const useGetPeerAmbassadorHook = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [getPeerAmbassador,setGetPeerAmbassador]=useState();
+  const [peerCount,setPeerCount]=useState();
   const [loginResponse, setLoginResponse] = useState();
   let token = localStorage.getItem("token");
 
@@ -23,8 +24,8 @@ export const useGetPeerAmbassadorHook = () => {
       .then((res) => {
         console.log(res, "operator");
         if (res?.status == 200) {
-            setGetPeerAmbassador(res?.data?.data?.peerAmbassadors
-            )
+            setGetPeerAmbassador(res?.data?.data?.peerAmbassadors)
+            setPeerCount(res?.data?.results)
           setLoading(false);
         } else {
           toast.error(res?.message);
@@ -95,6 +96,7 @@ export const useGetPeerAmbassadorHook = () => {
     handleEditPeerAmbassadorForm,
     getPeerAmbassador,
     loading,
+    peerCount,
     loginResponse,
     handleDelete
   };

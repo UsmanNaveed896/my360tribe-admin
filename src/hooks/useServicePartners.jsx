@@ -8,6 +8,7 @@ export const useServicePartnerHook = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [getServicePartner,setServicePartner]=useState();
+  const [partnersCount,setPartnersCount]=useState()
   const [loginResponse, setLoginResponse] = useState();
   let token = localStorage.getItem("token");
 
@@ -23,8 +24,8 @@ export const useServicePartnerHook = () => {
       .then((res) => {
         console.log(res, "operator");
         if (res?.status == 200) {
-          setServicePartner(res?.data?.data?.serviceIntakes
-          )
+          setServicePartner(res?.data?.data?.serviceIntakes)
+          setPartnersCount(res?.data?.results)
           setLoading(false);
         } else {
           toast.error(res?.message);
@@ -94,6 +95,7 @@ export const useServicePartnerHook = () => {
     handleGetServicePartner,
     handleEditServicePartnerForm,
     getServicePartner,
+    partnersCount,
     loading,
     loginResponse,
     handleDelete

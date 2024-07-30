@@ -7,7 +7,8 @@ import axios from "axios";
 export const useGetUsersHook = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [users,setUsers]=useState()
+  const [users,setUsers]=useState();
+  const [usersCount,setUsersCount]=useState()
   const [loginResponse, setLoginResponse] = useState(false);
   let token = localStorage.getItem("token");
   const handleGetUsers = () => {
@@ -21,6 +22,7 @@ export const useGetUsersHook = () => {
 
         if (res?.status == 200) {
           setUsers(res?.data?.data?.data)
+          setUsersCount(res?.data.results)
           setLoading(false);
         } else {
           toast.error(res?.message);
@@ -92,6 +94,7 @@ export const useGetUsersHook = () => {
     handleGetUsers,
     handleEditUsers,
     handleDelete,
+    usersCount,
     users,
     loading,
     loginResponse,

@@ -8,6 +8,7 @@ export const useGetConciergeHook = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [getConcierge,setGetConcierge]=useState();
+  const [conciergeCount,setConciergeCount]=useState()
   const [loginResponse, setLoginResponse] = useState();
   let token = localStorage.getItem("token");
 
@@ -24,6 +25,7 @@ export const useGetConciergeHook = () => {
         console.log(res, "operator");
         if (res?.status == 200) {
             setGetConcierge(res?.data?.data?.concierges)
+            setConciergeCount(res?.data?.results)
           setLoading(false);
         } else {
           toast.error(res?.message);
@@ -92,6 +94,7 @@ export const useGetConciergeHook = () => {
   return {
     handleGetConcierge,
     handleEditConciergeForm,
+    conciergeCount,
     getConcierge,
     loading,
     loginResponse,

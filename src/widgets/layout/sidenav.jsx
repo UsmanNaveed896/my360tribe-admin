@@ -31,11 +31,11 @@ export function Sidenav({ brandImg, brandName, routes }) {
       <div className={`relative`}>
         <Link to="/" className="py-6 px-8 text-center">
           <Typography
-            variant="h6"
+            variant="h5"
             className="uppercase"
             color={sidenavType === "dark" ? "white" : "blue-gray"}
           >
-            {auth ? localStorage.getItem("name") : ""}
+          <span className="font-bold pr-1 ">WELCOME</span>  {auth ? localStorage.getItem("name") : ""}
           </Typography>
         </Link>
         <IconButton
