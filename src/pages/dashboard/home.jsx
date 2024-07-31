@@ -30,13 +30,17 @@ export function Home() {
       partnersCount.handleGetServicePartner();
     } else if (role === "operator") {
       operators.handleGetOperator();
+    } else if (role === "peerAmbassador") {
+      peers.handleGetPeerAmbassador();
+    } else if (role === "concierge") {
+      concierge.handleGetConcierge();
     }
   }, [role]);
 
-  const filteredCardsData = statisticsCardsData.filter(card =>
+  const filteredCardsData = statisticsCardsData.filter((card) =>
     card.roles ? card.roles.includes(role) : true
   );
-  const filteredChartsData = statisticsChartsData.filter(chart =>
+  const filteredChartsData = statisticsChartsData.filter((chart) =>
     chart.roles ? chart.roles.includes(role) : true
   );
 
@@ -59,17 +63,25 @@ export function Home() {
       "Total Partners",
     ];
   } else if (role === "operator") {
-    const employedCount = operators?.getOperators?.filter(item => item.currentlyEmployed === true).length;
-    countsArray = [
-      operators?.operatorCount,
-      employedCount
-    ];
-    titlesArray = [
-      "Total Operators",
-      "Employed"
-    ];
+    const employedCount = operators?.getOperators?.filter(
+      (item) => item.currentlyEmployed === true
+    ).length;
+    countsArray = [operators?.operatorCount, employedCount];
+    titlesArray = ["Total Operators", "Employed"];
+  } else if (role === "peerAmbassador") {
+    const peerOperatorCount = peers?.getPeerAmbassador?.map(
+      (item) => item.numberOfOperators
+    );
+    countsArray = [peers?.peerCount, peerOperatorCount];
+    titlesArray = ["Total Peer Ambassadors", "No of Operators"];
+  } else if (role === "concierge") {
+    const peerOperatorCount = concierge?.getConcierge?.map(
+      (item) => item.numberOfOperators
+    );
+    countsArray = [concierge?.conciergeCount, peerOperatorCount];
+    titlesArray = ["Total Concierge", "No of Operators"];
   }
-console.log()
+  console.log(peers?.getPeerAmbassador, "ssss");
   return (
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">

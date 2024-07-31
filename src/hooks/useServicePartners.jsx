@@ -35,7 +35,7 @@ export const useServicePartnerHook = () => {
       .catch((err) => {
         setLoading(false);
         console.log("err", err);
-        toast.error(err?.response?.data?.message);
+    
       });
   };
   const handleEditServicePartnerForm = (data) => {

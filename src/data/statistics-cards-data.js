@@ -80,4 +80,48 @@ export const statisticsCardsData = [
     },
     roles: ["operator"], 
   },
+  {
+    color: "gray",
+    icon: TableCellsIcon,
+    title: "Peer Ambassador",
+    value: "$120k",
+    footer: {
+      color: "text-red-500",
+      label: "Operators",
+    },
+    roles: ["peerAmbassador"], 
+  },
+  {
+    color: "gray",
+    icon: TableCellsIcon,
+    title: "",
+    value: "$120k",
+    footer: {
+      color: "text-red-500",
+      label: "Operators",
+    },
+    roles: ["peerAmbassador"], 
+  },
+  {
+    color: "gray",
+    icon: TableCellsIcon,
+    title: "Currently Employed",
+    value: "$120k",
+    footer: {
+      color: "text-red-500",
+      label: "Operators",
+    },
+    roles: ["concierge"], 
+  },
+  {
+    color: "gray",
+    icon: TableCellsIcon,
+    title: "Currently Employed",
+    value: "$120k",
+    footer: {
+      color: "text-red-500",
+      label: "Operators",
+    },
+    roles: ["concierge"], 
+  },
 ];
