@@ -151,6 +151,22 @@ export const statisticsChartsData = [
     chart: dailySalesChart,
     roles: ["operator"], 
   },
+  {
+    color: "white",
+    title: "Peer Ambassador",
+    // description: "15% increase in today sales",
+    // footer: "updated 4 min ago",
+    chart: dailySalesChart,
+    roles: ["peerAmbassador"], 
+  },
+  {
+    color: "white",
+    title: "Concierge",
+    // description: "15% increase in today sales",
+    // footer: "updated 4 min ago",
+    chart: dailySalesChart,
+    roles: ["concierge"], 
+  },
 ];
 
 export default statisticsChartsData;

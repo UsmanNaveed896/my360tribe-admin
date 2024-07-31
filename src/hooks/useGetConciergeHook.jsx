@@ -35,7 +35,7 @@ export const useGetConciergeHook = () => {
       .catch((err) => {
         setLoading(false);
         console.log("err", err);
-        toast.error(err?.response?.data?.message);
+     
       });
   };
   const handleEditConciergeForm = (data) => {

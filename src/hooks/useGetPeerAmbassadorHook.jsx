@@ -35,7 +35,7 @@ export const useGetPeerAmbassadorHook = () => {
       .catch((err) => {
         setLoading(false);
         console.log("err", err);
-        toast.error(err?.response?.data?.message);
+    
       });
   };
   const handleEditPeerAmbassadorForm = (data) => {
