@@ -20,7 +20,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
       <ThemeProvider>
         <MaterialTailwindControllerProvider>
@@ -29,5 +29,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </MaterialTailwindControllerProvider>
       </ThemeProvider>
     </BrowserRouter>
-  </React.StrictMode>
+
 );

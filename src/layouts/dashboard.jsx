@@ -9,14 +9,23 @@ import {
 } from "@/widgets/layout";
 import routes from "@/routes";
 import { useMaterialTailwindController, setOpenConfigurator } from "@/context";
+import { useState } from "react";
+import UserModal from "@/components/profileModal";
 
 export function Dashboard() {
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(!open);
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavType } = controller;
   const routeConfigs = routes();
+  console.log(open,"open")
   return (
+    <>
     <div className="min-h-screen bg-blue-gray-50/50">
       <Sidenav
+      open={open}
+      setOpen={setOpen}
         routes={routes}
         brandImg={
           sidenavType === "dark" ? "/img/logo-ct.png" : "/img/logo-ct-dark.png"
@@ -48,6 +57,8 @@ export function Dashboard() {
         </div>
       </div>
     </div>
+    <UserModal open={open}     setOpen={setOpen}/>
+    </>
   );
 }
 

@@ -8,6 +8,7 @@ export const useRegisterHook = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [loginResponse, setLoginResponse] = useState();
+  const [userResponse,setUserResponse]=useState()
 
   const handleLogin = (data) => {
     setLoading(true);
@@ -28,11 +29,22 @@ export const useRegisterHook = () => {
           const name = res?.data?.data?.user?.fullName;
           const photo = res?.data?.data?.user?.photo;
           const role = res?.data?.data?.user?.role;
+          const email = res?.data?.data?.user?.email;
+          const phone = res?.data?.data?.user?.phone;
+          const status = res?.data?.data?.user?.status;
+
           localStorage.setItem("role", role);
           localStorage.setItem("photo", photo);
           localStorage.setItem("name", name);
           localStorage.setItem("token", token);
           localStorage.setItem("user_id", userid);
+          localStorage.setItem("email", email);
+          localStorage.setItem("phone", phone);
+          localStorage.setItem("status", status);
+
+
+          const response=res?.data?.data
+          setUserResponse(response)
           setLoading(false);
           navigate("/dashboard/home");
         } else {
@@ -73,5 +85,6 @@ export const useRegisterHook = () => {
     handleSignup,
     loading,
     loginResponse,
+    userResponse
   };
 };
