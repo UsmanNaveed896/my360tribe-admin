@@ -21,12 +21,12 @@ const Concierge = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
-    console.log("abc")
+    
     concierge.handleGetConcierge();
     if(concierge.loginResponse){
       handleCloseEditModal();
     }
-  }, []);
+  }, [concierge.loginResponse]);
 
   const handleOpenEditModal = (user) => {
     setSelectedUser(user);

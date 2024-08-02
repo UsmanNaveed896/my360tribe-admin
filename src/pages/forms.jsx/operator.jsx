@@ -6,10 +6,18 @@ import {
   Typography,
   Button,
 } from "@material-tailwind/react";
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid } from "@mui/x-data-grid";
 import { Puff } from "react-loader-spinner";
 import { useGetOperatorHook } from "@/hooks/useGetOperatorHook";
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, MenuItem, CircularProgress } from '@mui/material';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
 import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 
 const Operator = () => {
@@ -91,35 +99,49 @@ const Operator = () => {
   };
 
   const columns = [
-    { field: 'fullName', headerName: 'Full Name', width: 200 },
-    { field: 'DOB', headerName: 'DOB', width: 150 },
-    { field: 'airForceAfSoc', headerName: 'Department', width: 200 },
-    { field: 'EOD', headerName: 'Sub Domain', width: 200 },
-    { field: 'currentlyEmployed', headerName: 'Employed', width: 150, renderCell: (params) => (
-      <Typography className="text-xs font-semibold text-blue-gray-600 mt-7">
-        {params.value ? 'Yes' : 'No'}
-      </Typography>
-    )},
-    { field: 'location', headerName: 'Location', width: 200 },
+    { field: "fullName", headerName: "Full Name", width: 200 },
+    { field: "DOB", headerName: "DOB", width: 150 },
+    { field: "airForceAfSoc", headerName: "Department", width: 200 },
+    { field: "EOD", headerName: "Sub Domain", width: 200 },
     {
-      field: 'actions',
-      headerName: 'Actions',
+      field: "currentlyEmployed",
+      headerName: "Employed",
+      width: 150,
+      renderCell: (params) => (
+        <Typography className="text-xs font-semibold text-blue-gray-600 mt-7">
+          {params.value ? "Yes" : "No"}
+        </Typography>
+      ),
+    },
+    { field: "location", headerName: "Location", width: 200 },
+    {
+      field: "actions",
+      headerName: "Actions",
       width: 150,
       renderCell: (params) => (
         <div className="flex gap-2 mt-4">
-          <MdVisibility className="cursor-pointer w-5 h-5" onClick={() => handleOpenViewModal(params.row)} />
-          <MdEdit className="cursor-pointer w-5 h-5" onClick={() => handleOpenEditModal(params.row)} />
-          <MdDelete className="cursor-pointer w-5 h-5" onClick={() => handleDelete(params.row._id)} />
+          <MdVisibility
+            className="cursor-pointer w-5 h-5"
+            onClick={() => handleOpenViewModal(params.row)}
+          />
+          <MdEdit
+            className="cursor-pointer w-5 h-5"
+            onClick={() => handleOpenEditModal(params.row)}
+          />
+          <MdDelete
+            className="cursor-pointer w-5 h-5"
+            onClick={() => handleDelete(params.row._id)}
+          />
         </div>
-      )
-    }
+      ),
+    },
   ];
 
   const rows = getOperatorksHook.getOperators?.map((operator, index) => ({
     ...operator,
     id: operator._id,
     fullName: `${operator.firstName} ${operator.lastName}`,
-    DOB:operator?.DOB?.slice(0,10)
+    DOB: operator?.DOB?.slice(0, 10),
   }));
 
   return (
@@ -144,8 +166,13 @@ const Operator = () => {
           </div>
         ) : (
           <CardBody className="px-0 pt-0 pb-2">
-            <div style={{ height: 500, width: '100%' }}>
-              <DataGrid rows={rows} columns={columns} pageSize={5}  rowHeight={80}/>
+            <div style={{ height: 500, width: "100%" }}>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSize={5}
+                rowHeight={80}
+              />
             </div>
           </CardBody>
         )}
@@ -156,13 +183,24 @@ const Operator = () => {
         <DialogTitle>Edit Operator</DialogTitle>
         <DialogContent>
           <TextField
-            label="Full Name"
-            value={selectedUser?.firstName + " " + selectedUser?.lastName}
+            label="First Name"
+            value={selectedUser?.firstName}
             onChange={(e) =>
               setSelectedUser({
                 ...selectedUser,
-                firstName: e.target.value.split(" ")[0],
-                lastName: e.target.value.split(" ")[1],
+                firstName: e.target.value,
+              })
+            }
+            fullWidth
+            margin="dense"
+          />
+          <TextField
+            label="Last Name"
+            value={ selectedUser?.lastName}
+            onChange={(e) =>
+              setSelectedUser({
+                ...selectedUser,
+                lastName: e.target.value,
               })
             }
             fullWidth
@@ -215,11 +253,19 @@ const Operator = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseEditModal} variant="outlined" color="secondary">
+          <Button
+            onClick={handleCloseEditModal}
+            variant="outlined"
+            color="secondary"
+          >
             Cancel
           </Button>
           <Button onClick={handleSaveChanges} color="primary">
-            {getOperatorksHook.loading ? <CircularProgress size={24} /> : "Save Changes"}
+            {getOperatorksHook.loading ? (
+              <CircularProgress size={24} />
+            ) : (
+              "Save Changes"
+            )}
           </Button>
         </DialogActions>
       </Dialog>
@@ -264,7 +310,7 @@ const Operator = () => {
             readOnly
           />
           <Typography variant="body2" color="textSecondary">
-            Employed: {selectedUser?.currentlyEmployed ? 'Yes' : 'No'}
+            Employed: {selectedUser?.currentlyEmployed ? "Yes" : "No"}
           </Typography>
         </DialogContent>
         <DialogActions>
