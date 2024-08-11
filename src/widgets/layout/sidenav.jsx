@@ -11,7 +11,7 @@ import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 import { useContext } from "react";
 import { AuthContext } from "@/pages/auth/authecontext";
 
-export function Sidenav({ brandImg, brandName, routes }) {
+export function Sidenav({ brandImg, brandName, routes,setOpen,open }) {
   const { auth } = useContext(AuthContext);
   const [controller, dispatch] = useMaterialTailwindController();
   const { sidenavColor, sidenavType, openSidenav } = controller;
@@ -38,6 +38,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
           <span className="font-bold pr-1 ">WELCOME</span>  {auth ? localStorage.getItem("name") : ""}
           </Typography>
         </Link>
+        <p className="text-sm text-center hover:underline cursor-pointer" onClick={()=>setOpen(!open)}>View Profile Details</p>
         <IconButton
           variant="text"
           color="white"
