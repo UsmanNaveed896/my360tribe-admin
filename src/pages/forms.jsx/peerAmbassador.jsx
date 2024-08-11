@@ -17,6 +17,7 @@ import {
   TextField,
   MenuItem,
   CircularProgress,
+  FormControl, InputLabel, Select
 } from "@mui/material";
 import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 
@@ -63,24 +64,46 @@ const PeerAmbassador = () => {
   };
 
   const columns = [
-    { field: "fullName", headerName: "Full Name", width: 150 },
-    { field: "dob", headerName: "DOB", width: 100 },
-    { field: "branchOfService", headerName: "Branch of Service", width: 150 },
-    { field: "contactMethod", headerName: "Contact Method", width: 150 },
-    { field: "howHeardAboutUs", headerName: "Source", width: 150 },
-    { field: "whyPeerAmbassador", headerName: "Reason", width: 150 },
-    { field: "hoursPerMonth", headerName: "No of Hr/Operators", width: 150 },
-    { field: "transitionServices", headerName: "Organization", width: 150 },
+    { field: "fullName", headerName: "Full Name", flex:1 },
+    { field: "dob", headerName: "DOB", flex:1},
+    { field: "branchOfService", headerName: "Branch of Service", flex:1 },
+    { field: "contactMethod", headerName: "Contact Method", flex:1 },
+    { field: "howHeardAboutUs", headerName: "Source", flex:1 },
+    { field: "whyPeerAmbassador", headerName: "Reason", flex:1 },
+    { field: "hoursPerMonth", headerName: "No of Hr/Operators", flex:1 },
+    { field: "transitionServices", headerName: "Organization", flex:1 },
     {
       field: "recommendedTransitionServices",
       headerName: "Support Areas",
-      width: 150,
+      flex:1,
     },
-    { field: "uncomfortableTopics", headerName: "Topics", width: 150 },
+    { field: "uncomfortableTopics", headerName: "Topics", flex:1 },
+    {
+      field: "assignTo",
+      headerName: "Assign to",
+      width: 200,
+      renderCell: (params) => (
+        <div className="mt-3">
+          <FormControl sx={{width:'150px'}}>
+            <InputLabel id="demo-simple-select-label">Assign To</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              variant="standard"
+              label="Age"
+            >
+              <MenuItem value={10}>Concierge</MenuItem>
+              <MenuItem value={20}>Operators</MenuItem>
+              <MenuItem value={30}>Service Partner</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+      ),
+    },
     {
       field: "actions",
       headerName: "Actions",
-      width: 150,
+      flex:1,
       renderCell: (params) => (
         <div style={{ display: "flex", gap: "6px" }} className="mt-6">
           <MdVisibility

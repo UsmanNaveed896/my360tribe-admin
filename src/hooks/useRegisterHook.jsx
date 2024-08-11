@@ -28,7 +28,7 @@ export const useRegisterHook = () => {
           const userid = res?.data?.data?.user?._id;
           const name = res?.data?.data?.user?.fullName;
           const photo = res?.data?.data?.user?.photo;
-          const role = res?.data?.data?.user?.role;
+          const role = res?.data?.data?.user?.role?.name;
           const email = res?.data?.data?.user?.email;
           const phone = res?.data?.data?.user?.phone;
           const status = res?.data?.data?.user?.status;

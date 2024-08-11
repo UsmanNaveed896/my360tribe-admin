@@ -6,6 +6,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl, InputLabel, MenuItem, Select
 } from "@mui/material";
 import {
   Card,
@@ -83,6 +84,28 @@ const ServicePartners = () => {
     { field: "veteranSpecificServices", headerName: "Veteran Specific Services", width:150 },
     { field: "servicesProvided", headerName: "Services Provided", width:150 },
     { field: "description", headerName: "Description", width:150 },
+    {
+      field: "assignTo",
+      headerName: "Assign to",
+      width: 200,
+      renderCell: (params) => (
+        <div className="">
+          <FormControl sx={{width:'150px'}}>
+            <InputLabel id="demo-simple-select-label">Assign To</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              variant="standard"
+              label="Age"
+            >
+              <MenuItem value={10}>Concierge</MenuItem>
+              <MenuItem value={20}>Peer Ambassador</MenuItem>
+              <MenuItem value={30}>Operator</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+      ),
+    },
     {
       field: "actions",
       headerName: "Actions",

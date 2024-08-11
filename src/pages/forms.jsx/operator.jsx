@@ -17,6 +17,9 @@ import {
   TextField,
   MenuItem,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
 } from "@mui/material";
 import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 
@@ -46,6 +49,8 @@ const Operator = () => {
   const [selectedBranch, setSelectedBranch] = useState("AirForce");
   const [branchOptions, setBranchOptions] = useState(options[selectedBranch]);
 
+  const roles = ["Service partner", "Concierge", "Peer Ambassador"];
+
   useEffect(() => {
     getOperatorksHook.handleGetOperator();
   }, [getOperatorksHook.loginResponse]);
@@ -67,6 +72,11 @@ const Operator = () => {
   const handleSubDomainChange = (event) => {
     const subDomain = event.target.value;
     setSelectedUser({ ...selectedUser, EOD: subDomain });
+  };
+
+  const handleAssignToChange = (event) => {
+    const role = event.target.value;
+    setSelectedUser({ ...selectedUser, assignTo: role });
   };
 
   const handleOpenEditModal = (user) => {
@@ -114,6 +124,28 @@ const Operator = () => {
       ),
     },
     { field: "location", headerName: "Location", width: 200 },
+    {
+      field: "assignTo",
+      headerName: "Assign to",
+      width: 200,
+      renderCell: (params) => (
+        <div className="mt-3">
+          <FormControl sx={{width:'150px'}}>
+            <InputLabel id="demo-simple-select-label">Assign To</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              variant="standard"
+              label="Age"
+            >
+              <MenuItem value={10}>Concierge</MenuItem>
+              <MenuItem value={20}>Peer Ambassador</MenuItem>
+              <MenuItem value={30}>Service Partner</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+      ),
+    },
     {
       field: "actions",
       headerName: "Actions",
@@ -196,7 +228,7 @@ const Operator = () => {
           />
           <TextField
             label="Last Name"
-            value={ selectedUser?.lastName}
+            value={selectedUser?.lastName}
             onChange={(e) =>
               setSelectedUser({
                 ...selectedUser,
@@ -251,6 +283,20 @@ const Operator = () => {
             fullWidth
             margin="dense"
           />
+          <TextField
+            label="Assign to"
+            select
+            value={selectedUser?.assignTo || ""}
+            onChange={handleAssignToChange}
+            fullWidth
+            margin="dense"
+          >
+            {roles.map((role, index) => (
+              <MenuItem key={index} value={role}>
+                {role}
+              </MenuItem>
+            ))}
+          </TextField>
         </DialogContent>
         <DialogActions>
           <Button
@@ -305,6 +351,13 @@ const Operator = () => {
           <TextField
             label="Location"
             value={selectedUser?.location}
+            fullWidth
+            margin="dense"
+            readOnly
+          />
+          <TextField
+            label="Assign to"
+            value={selectedUser?.assignTo}
             fullWidth
             margin="dense"
             readOnly

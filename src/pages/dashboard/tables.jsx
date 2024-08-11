@@ -62,14 +62,13 @@ export function Tables() {
     usersHook.handleDelete(id);
   };
 
-  console.log(selectedUser,"selected")
+  
   const handleCreateUser = (data) => {
     console.log(data, "data");
     const formData = new FormData();
     formData.append("fullName", data.fullName);
     formData.append("email", data.email);
     formData.append("phone", data.phone);
-    formData.append("role", data.role);
     formData.append("status", data.status);
     formData.append("password", data.password);
     formData.append("passwordConfirm", data.confirmPassword);
@@ -117,9 +116,9 @@ export function Tables() {
       filterable: false,
       width: 100,
     },
-    { field: "fullName", headerName: "Full Name", width: 170 },
-    { field: "email", headerName: "Email", width: 220 },
-    { field: "phone", headerName: "Phone", width: 170 },
+    { field: "fullName", headerName: "Full Name", flex:1 },
+    { field: "email", headerName: "Email",flex:1 },
+    { field: "phone", headerName: "Phone", flex:1 },
     {
       field: "status",
       headerName: "Status",
@@ -144,17 +143,12 @@ export function Tables() {
           </Typography>
         </div>
       ),
-      width: 170,
-    },
-    {
-      field: "role",
-      headerName: "Role",
-      width: 170,
+      flex:1,
     },
     {
       field: "actions",
       headerName: "Actions",
-      width: 100,
+      flex:1,
       renderCell: (params) => (
         <div className="mt-6 flex gap-2">
           <MdEdit
@@ -181,9 +175,8 @@ export function Tables() {
     email: user.email,
     phone: user.phone,
     status: user.status,
-    role: user.role,
   }));
-
+console.log(usersHook?.users,"sdsd")
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
@@ -258,23 +251,7 @@ export function Tables() {
             fullWidth
             margin="dense"
           />
-          <TextField
-            label="Role"
-            variant="outlined"
-            select
-            value={selectedUser?.role || ""}
-            onChange={(e) =>
-              setSelectedUser({ ...selectedUser, role: e.target.value })
-            }
-            fullWidth
-            margin="dense"
-          >
-            <MenuItem value="super_admin">Super Admin</MenuItem>
-            <MenuItem value="operator">Operator</MenuItem>
-            <MenuItem value="concierge">Concierge</MenuItem>
-            <MenuItem value="peer_ambassador">Peer Ambassador</MenuItem>
-            <MenuItem value="service_partner">Service Partner</MenuItem>
-          </TextField>
+         
           <TextField
             label="Status"
             variant="outlined"

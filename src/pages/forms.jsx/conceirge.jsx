@@ -9,7 +9,7 @@ import {
 } from "@material-tailwind/react";
 import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { Puff } from "react-loader-spinner";
 import { useGetConciergeHook } from "@/hooks/useGetConciergeHook";
@@ -127,6 +127,28 @@ const Concierge = () => {
       field: 'uncomfortableTopics',
       headerName: 'Topics',
       width:150,
+    },
+    {
+      field: "assignTo",
+      headerName: "Assign to",
+      width: 200,
+      renderCell: (params) => (
+        <div className="mt-3">
+          <FormControl sx={{width:'150px'}}>
+            <InputLabel id="demo-simple-select-label">Assign To</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              variant="standard"
+              label="Age"
+            >
+              <MenuItem value={10}>Operators</MenuItem>
+              <MenuItem value={20}>Peer Ambassador</MenuItem>
+              <MenuItem value={30}>Service Partner</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+      ),
     },
     {
       field: 'actions',

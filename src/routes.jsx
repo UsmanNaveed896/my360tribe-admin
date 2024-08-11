@@ -11,10 +11,11 @@ import Permissions from './pages/dashboard/permissions';
 import { SignUp } from '@/pages/auth';
 import Operator from './pages/forms.jsx/operator';
 import Conceirge from './pages/forms.jsx/conceirge';
-import { MdOutlineReduceCapacity, MdSupervisedUserCircle } from 'react-icons/md';
+import { MdAssignment, MdOutlineReduceCapacity, MdSupervisedUserCircle } from 'react-icons/md';
 import PeerAmbassador from './pages/forms.jsx/peerAmbassador';
 import ServicePartners from './pages/forms.jsx/servicePartners';
 import { AuthContext } from './pages/auth/authecontext';
+import AssignedForms from './pages/dashboard/assignedForms';
 
 const icon = {
   className: 'w-5 h-5 text-inherit',
@@ -75,6 +76,14 @@ const routes = () => {
           name: 'Service Partners',
           path: '/servicePartner',
           element: <ServicePartners />,
+          condition: role === 'superAdmin' || role === 'servicePartner' || role === 'admin',
+
+        },
+        {
+          icon: <MdAssignment  {...icon} />,
+          name: 'Assign',
+          path: '/assigned',
+          element: <AssignedForms />,
           condition: role === 'superAdmin' || role === 'servicePartner' || role === 'admin',
 
         },
