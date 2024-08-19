@@ -22,7 +22,7 @@ export function Dashboard() {
   console.log(open,"open")
   return (
     <>
-    <div className="min-h-screen bg-blue-gray-50/50">
+    <div className="min-h-screen bg-[#000032]">
       <Sidenav
       open={open}
       setOpen={setOpen}

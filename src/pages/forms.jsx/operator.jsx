@@ -109,12 +109,33 @@ const Operator = () => {
   };
 
   const columns = [
-    { field: "fullName", headerName: "Full Name", width: 200 },
-    { field: "DOB", headerName: "DOB", width: 150 },
-    { field: "airForceAfSoc", headerName: "Department", width: 200 },
-    { field: "EOD", headerName: "Sub Domain", width: 200 },
+    {
+      field: "fullName",
+      headerName: "Full Name",
+      width: 200,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "DOB",
+      headerName: "DOB",
+      width: 150,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "airForceAfSoc",
+      headerName: "Department",
+      width: 200,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "EOD",
+      headerName: "Sub Domain",
+      width: 200,
+      headerClassName: "bg-[#000032] text-white",
+    },
     {
       field: "currentlyEmployed",
+      headerClassName: "bg-[#000032] text-white",
       headerName: "Employed",
       width: 150,
       renderCell: (params) => (
@@ -123,31 +144,54 @@ const Operator = () => {
         </Typography>
       ),
     },
-    { field: "location", headerName: "Location", width: 200 },
+    {
+      field: "location",
+      headerName: "Location",
+      width: 200,
+      headerClassName: "bg-[#000032] text-white",
+    },
     {
       field: "assignTo",
+      headerClassName: "bg-[#000032] text-white",
       headerName: "Assign to",
       width: 200,
       renderCell: (params) => (
-        <div className="mt-3">
-          <FormControl sx={{width:'150px'}}>
-            <InputLabel id="demo-simple-select-label">Assign To</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              variant="standard"
-              label="Age"
-            >
-              <MenuItem value={10}>Concierge</MenuItem>
-              <MenuItem value={20}>Peer Ambassador</MenuItem>
-              <MenuItem value={30}>Service Partner</MenuItem>
-            </Select>
-          </FormControl>
+        <div className="mt-3 text-white">
+         <FormControl sx={{ width: "150px" }}>
+      <InputLabel id="demo-simple-select-label" sx={{ color: 'white' }}>Assign To</InputLabel>
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        variant="standard"
+        label="Assign To"
+        sx={{
+          color: 'white', // Changes the selected text color
+          '& .MuiSvgIcon-root': {
+            color: 'white', // Changes the dropdown arrow color
+          },
+        }}
+        MenuProps={{
+          PaperProps: {
+            sx: {
+              // Background color of the dropdown
+              '& .MuiMenuItem-root': {
+                color: 'black', // Text color of the dropdown options
+              },
+            },
+          },
+        }}
+      >
+        <MenuItem value={10}>Concierge</MenuItem>
+        <MenuItem value={20}>Peer Ambassador</MenuItem>
+        <MenuItem value={30}>Service Partner</MenuItem>
+      </Select>
+    </FormControl>
         </div>
       ),
     },
     {
       field: "actions",
+      headerClassName: "bg-[#000032] text-white",
       headerName: "Actions",
       width: 150,
       renderCell: (params) => (
@@ -178,8 +222,8 @@ const Operator = () => {
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
-      <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+      <Card  sx={{ backgroundColor: "#191a45" }}>
+        <CardHeader variant="gradient"  color="#000032" className="mb-8 p-6 bg-[#191a45]"  sx={{ backgroundColor: "#191a45" }}>
           <Typography variant="h6" color="white">
             Operators
           </Typography>
@@ -197,13 +241,44 @@ const Operator = () => {
             />
           </div>
         ) : (
-          <CardBody className="px-0 pt-0 pb-2">
-            <div style={{ height: 500, width: "100%" }}>
+          <CardBody className="px-0 pt-0 pb-2 p-0">
+            <div
+              style={{
+                height: 500,
+                width: "100%",
+                backgroundColor: "#191a45",
+                color: "white",
+              }}
+            >
               <DataGrid
                 rows={rows}
                 columns={columns}
                 pageSize={5}
                 rowHeight={80}
+                sx={{
+                  "& .MuiDataGrid-root": {
+                    backgroundColor: "#191a45",
+                    color: "white",
+                  },
+                  "& .MuiDataGrid-cell": {
+                    backgroundColor: "#191a45",
+                    color: "white",
+                  },
+                  "& .MuiDataGrid-footerContainer": {
+                    color: "#fff", // Change footer background color to white
+                  },
+                  "& .MuiTablePagination-root": {
+                    color: "#fff", // Change text color in footer if needed
+                  },
+               
+                  "& .MuiDataGrid-columnHeaders": {
+                    color: "#000",
+                    backgroundColor: "#000032",
+                  },
+                  "& .MuiDataGrid-columnHeaderRow": {
+                    background: "#000032 !important", // Remove any background
+                  },
+                }}
               />
             </div>
           </CardBody>

@@ -10,6 +10,7 @@ import {
 import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 import { useContext } from "react";
 import { AuthContext } from "@/pages/auth/authecontext";
+import Img from '../../assets/logo21.png'
 
 export function Sidenav({ brandImg, brandName, routes,setOpen,open }) {
   const { auth } = useContext(AuthContext);
@@ -17,7 +18,7 @@ export function Sidenav({ brandImg, brandName, routes,setOpen,open }) {
   const { sidenavColor, sidenavType, openSidenav } = controller;
   const sidenavTypes = {
     dark: "bg-gradient-to-br from-gray-800 to-gray-900",
-    white: "bg-white shadow-sm",
+    white: "bg-[#191A45] shadow-sm text-white",
     transparent: "bg-transparent",
   };
   const routeConfigs = routes();
@@ -29,11 +30,14 @@ export function Sidenav({ brandImg, brandName, routes,setOpen,open }) {
       } fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100`}
     >
       <div className={`relative`}>
+        <div className="flex justify-center">
+        <img className="mt-8" src={Img} alt="abc" />
+        </div>
         <Link to="/" className="py-6 px-8 text-center">
           <Typography
             variant="h5"
             className="uppercase"
-            color={sidenavType === "dark" ? "white" : "blue-gray"}
+            color={sidenavType === "white" ? "dark" : "blue-gray"}
           >
           <span className="font-bold pr-1 ">WELCOME</span>  {auth ? localStorage.getItem("name") : ""}
           </Typography>
@@ -57,7 +61,7 @@ export function Sidenav({ brandImg, brandName, routes,setOpen,open }) {
               <li className="mx-3.5 mt-4 mb-2">
                 <Typography
                   variant="small"
-                  color={sidenavType === "dark" ? "white" : "blue-gray"}
+                  color={sidenavType === "white" ? "white" : "blue-gray"}
                   className="font-black uppercase opacity-75"
                 >
                   {title}
@@ -69,13 +73,13 @@ export function Sidenav({ brandImg, brandName, routes,setOpen,open }) {
                 <NavLink to={`/${layout}${path}`}>
                   {({ isActive }) => (
                     <Button
-                      variant={isActive ? "gradient" : "text"}
+                      variant={isActive ? "#7243E9" : "text"}
                       color={
                         isActive
-                          ? sidenavColor
-                          : sidenavType === "dark"
+                          ? '#AF71FF'
+                          : sidenavType === "white"
                           ? "white"
-                          : "blue-gray"
+                          : "red"
                       }
                       className="flex items-center gap-4 px-4 capitalize"
                       fullWidth
