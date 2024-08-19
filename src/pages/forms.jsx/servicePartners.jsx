@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
- 
   TextField,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl, InputLabel, MenuItem, Select
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import {
   Card,
@@ -65,38 +67,93 @@ const ServicePartners = () => {
   };
 
   const columns = [
-    { field: "organizationName", headerName: "Organization Name", width:150 },
-    { field: "phone", headerName: "Phone", width:150 },
-    { field: "address", headerName: "Address", width:150 },
+    {
+      field: "organizationName",
+      headerName: "Organization Name",
+      width: 150,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "phone",
+      headerName: "Phone",
+      width: 150,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "address",
+      headerName: "Address",
+      width: 150,
+      headerClassName: "bg-[#000032] text-white",
+    },
     {
       field: "websiteUrl",
       headerName: "Website",
-      width:150,
+      headerClassName: "bg-[#000032] text-white",
+      width: 150,
       renderCell: (params) => (
         <a href={params.value} target="_blank" rel="noopener noreferrer">
           {params.value}
         </a>
       ),
     },
-    { field: "pointOfContactName", headerName: "Point of Contact", width:150 },
-    { field: "pointOfContactEmail", headerName: "Point of Contact Email", width:150 },
-    { field: "howHeardAboutUs", headerName: "How Heard About Us", width:150 },
-    { field: "veteranSpecificServices", headerName: "Veteran Specific Services", width:150 },
-    { field: "servicesProvided", headerName: "Services Provided", width:150 },
-    { field: "description", headerName: "Description", width:150 },
+    {
+      field: "pointOfContactName",
+      headerName: "Point of Contact",
+      width: 150,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "pointOfContactEmail",
+      headerName: "Point of Contact Email",
+      width: 150,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "howHeardAboutUs",
+      headerName: "How Heard About Us",
+      width: 150,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "veteranSpecificServices",
+      headerName: "Veteran Specific Services",
+      width: 150,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "servicesProvided",
+      headerName: "Services Provided",
+      width: 150,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 150,
+      headerClassName: "bg-[#000032] text-white",
+    },
     {
       field: "assignTo",
       headerName: "Assign to",
+      headerClassName: "bg-[#000032] text-white",
       width: 200,
       renderCell: (params) => (
         <div className="">
-          <FormControl sx={{width:'150px'}}>
-            <InputLabel id="demo-simple-select-label">Assign To</InputLabel>
+          <FormControl sx={{ width: "150px" }}>
+            <InputLabel id="demo-simple-select-label" sx={{ color: "white" }}>
+              Assign To
+            </InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               variant="standard"
               label="Age"
+              sx={{
+                color: "white", // Changes the selected text color
+                "& .MuiSvgIcon-root": {
+                  color: "white", // Changes the dropdown arrow color
+                },
+              }}
             >
               <MenuItem value={10}>Concierge</MenuItem>
               <MenuItem value={20}>Peer Ambassador</MenuItem>
@@ -109,21 +166,22 @@ const ServicePartners = () => {
     {
       field: "actions",
       headerName: "Actions",
-      width:150,
+      headerClassName: "bg-[#000032] text-white",
+      width: 150,
       renderCell: (params) => (
-        <div className="mt-4" style={{ display: "flex", gap: "6px", }}>
+        <div className="mt-4" style={{ display: "flex", gap: "6px" }}>
           <MdVisibility
-          className="w-5 h-5"
+            className="w-5 h-5"
             style={{ cursor: "pointer" }}
             onClick={() => handleOpenViewModal(params.row)}
           />
           <MdEdit
-          className="w-5 h-5"
+            className="w-5 h-5"
             style={{ cursor: "pointer" }}
             onClick={() => handleOpenEditModal(params.row)}
           />
           <MdDelete
-          className="w-5 h-5"
+            className="w-5 h-5"
             style={{ cursor: "pointer" }}
             onClick={() => handleDelete(params.row._id)}
           />
@@ -132,15 +190,20 @@ const ServicePartners = () => {
     },
   ];
 
-  const rows = getService?.getServicePartner?.map((service, index) => ({
-    id: index,
-    ...service,
-  })) || [];
+  const rows =
+    getService?.getServicePartner?.map((service, index) => ({
+      id: index,
+      ...service,
+    })) || [];
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+        <CardHeader
+          variant="gradient"
+          color="#000032"
+          className="mb-8 p-6 bg-[#191a45]"
+        >
           <Typography variant="h6" color="white">
             Service Partners
           </Typography>
@@ -159,8 +222,43 @@ const ServicePartners = () => {
           </div>
         ) : (
           <CardBody className="px-0 pt-0 pb-2">
-            <div style={{ height: 500, width: '100%' }}>
-              <DataGrid rows={rows} columns={columns} pageSize={5} />
+            <div
+              style={{
+                height: 500,
+                width: "100%",
+                backgroundColor: "#191a45",
+                color: "white",
+              }}
+            >
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSize={5}
+                sx={{
+                  "& .MuiDataGrid-root": {
+                    backgroundColor: "#191a45",
+                    color: "white",
+                  },
+                  "& .MuiDataGrid-cell": {
+                    backgroundColor: "#191a45",
+                    color: "white",
+                  },
+                  "& .MuiDataGrid-footerContainer": {
+                    color: "#fff", // Change footer background color to white
+                  },
+                  "& .MuiTablePagination-root": {
+                    color: "#fff", // Change text color in footer if needed
+                  },
+
+                  "& .MuiDataGrid-columnHeaders": {
+                    color: "#000",
+                    backgroundColor: "#000032",
+                  },
+                  "& .MuiDataGrid-columnHeaderRow": {
+                    background: "#000032 !important", // Remove any background
+                  },
+                }}
+              />
             </div>
           </CardBody>
         )}
@@ -205,7 +303,10 @@ const ServicePartners = () => {
                 label="Website"
                 value={selectedUser.websiteUrl}
                 onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, websiteUrl: e.target.value })
+                  setSelectedUser({
+                    ...selectedUser,
+                    websiteUrl: e.target.value,
+                  })
                 }
                 fullWidth
                 margin="dense"
@@ -286,13 +387,16 @@ const ServicePartners = () => {
           )}
         </DialogContent>
         <DialogActions>
-        <Button variant="outlined" onClick={handleCloseEditModal} color="secondary">
+          <Button
+            variant="outlined"
+            onClick={handleCloseEditModal}
+            color="secondary"
+          >
             Cancel
           </Button>
           <Button onClick={handleSaveChanges} disabled={getService.loading}>
             {getService.loading ? "Saving..." : "Save Changes"}
           </Button>
-        
         </DialogActions>
       </Dialog>
 
@@ -365,13 +469,12 @@ const ServicePartners = () => {
                 readOnly
               />
               <Textarea
-               className="pt-3"
+                className="pt-3"
                 label="Description"
                 value={selectedUser.description}
                 fullWidth
                 margin="dense"
                 readOnly
-              
               />
             </>
           )}

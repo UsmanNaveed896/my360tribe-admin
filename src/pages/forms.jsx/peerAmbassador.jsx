@@ -17,7 +17,9 @@ import {
   TextField,
   MenuItem,
   CircularProgress,
-  FormControl, InputLabel, Select
+  FormControl,
+  InputLabel,
+  Select,
 } from "@mui/material";
 import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 
@@ -64,33 +66,88 @@ const PeerAmbassador = () => {
   };
 
   const columns = [
-    { field: "fullName", headerName: "Full Name", flex:1 },
-    { field: "dob", headerName: "DOB", flex:1},
-    { field: "branchOfService", headerName: "Branch of Service", flex:1 },
-    { field: "contactMethod", headerName: "Contact Method", flex:1 },
-    { field: "howHeardAboutUs", headerName: "Source", flex:1 },
-    { field: "whyPeerAmbassador", headerName: "Reason", flex:1 },
-    { field: "hoursPerMonth", headerName: "No of Hr/Operators", flex:1 },
-    { field: "transitionServices", headerName: "Organization", flex:1 },
+    {
+      field: "fullName",
+      headerName: "Full Name",
+      flex: 1,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "dob",
+      headerName: "DOB",
+      flex: 1,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "branchOfService",
+      headerName: "Branch of Service",
+      flex: 1,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "contactMethod",
+      headerName: "Contact Method",
+      flex: 1,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "howHeardAboutUs",
+      headerName: "Source",
+      flex: 1,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "whyPeerAmbassador",
+      headerName: "Reason",
+      flex: 1,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "hoursPerMonth",
+      headerName: "No of Hr/Operators",
+      flex: 1,
+      headerClassName: "bg-[#000032] text-white",
+    },
+    {
+      field: "transitionServices",
+      headerName: "Organization",
+      flex: 1,
+      headerClassName: "bg-[#000032] text-white",
+    },
     {
       field: "recommendedTransitionServices",
       headerName: "Support Areas",
-      flex:1,
+      flex: 1,
+      headerClassName: "bg-[#000032] text-white",
     },
-    { field: "uncomfortableTopics", headerName: "Topics", flex:1 },
+    {
+      field: "uncomfortableTopics",
+      headerName: "Topics",
+      flex: 1,
+      headerClassName: "bg-[#000032] text-white",
+    },
     {
       field: "assignTo",
+      headerClassName: "bg-[#000032] text-white",
       headerName: "Assign to",
       width: 200,
       renderCell: (params) => (
         <div className="mt-3">
-          <FormControl sx={{width:'150px'}}>
-            <InputLabel id="demo-simple-select-label">Assign To</InputLabel>
+          <FormControl sx={{ width: "150px" }}>
+            <InputLabel id="demo-simple-select-label" sx={{ color: "white" }}>
+              Assign To
+            </InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               variant="standard"
               label="Age"
+              sx={{
+                color: "white", // Changes the selected text color
+                "& .MuiSvgIcon-root": {
+                  color: "white", // Changes the dropdown arrow color
+                },
+              }}
             >
               <MenuItem value={10}>Concierge</MenuItem>
               <MenuItem value={20}>Operators</MenuItem>
@@ -102,8 +159,9 @@ const PeerAmbassador = () => {
     },
     {
       field: "actions",
+      headerClassName: "bg-[#000032] text-white",
       headerName: "Actions",
-      flex:1,
+      flex: 1,
       renderCell: (params) => (
         <div style={{ display: "flex", gap: "6px" }} className="mt-6">
           <MdVisibility
@@ -126,14 +184,18 @@ const PeerAmbassador = () => {
   const rows =
     peersGet?.getPeerAmbassador?.map((item, index) => ({
       id: index,
-      dob:item?.dob?.slice(0,10),
+      dob: item?.dob?.slice(0, 10),
       ...item,
     })) || [];
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+        <CardHeader
+          variant="gradient"
+          color="#000032"
+          className="mb-8 p-6 bg-[#191a45]"
+        >
           <Typography variant="h6" color="white">
             Peer Ambassador
           </Typography>
@@ -152,8 +214,44 @@ const PeerAmbassador = () => {
           </div>
         ) : (
           <CardBody className="px-0 pt-0 pb-2">
-            <div style={{ height: 500, width: "100%" }}>
-              <DataGrid rows={rows} columns={columns} pageSize={5} rowHeight={80} />
+            <div
+              style={{
+                height: 500,
+                width: "100%",
+                backgroundColor: "#191a45",
+                color: "white",
+              }}
+            >
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSize={5}
+                rowHeight={80}
+                sx={{
+                  "& .MuiDataGrid-root": {
+                    backgroundColor: "#191a45",
+                    color: "white",
+                  },
+                  "& .MuiDataGrid-cell": {
+                    backgroundColor: "#191a45",
+                    color: "white",
+                  },
+                  "& .MuiDataGrid-footerContainer": {
+                    color: "#fff", // Change footer background color to white
+                  },
+                  "& .MuiTablePagination-root": {
+                    color: "#fff", // Change text color in footer if needed
+                  },
+
+                  "& .MuiDataGrid-columnHeaders": {
+                    color: "#000",
+                    backgroundColor: "#000032",
+                  },
+                  "& .MuiDataGrid-columnHeaderRow": {
+                    background: "#000032 !important", // Remove any background
+                  },
+                }}
+              />
             </div>
           </CardBody>
         )}
@@ -203,7 +301,10 @@ const PeerAmbassador = () => {
             label="Contact Method"
             value={selectedUser?.contactMethod || ""}
             onChange={(e) =>
-              setSelectedUser({ ...selectedUser, contactMethod: e.target.value })
+              setSelectedUser({
+                ...selectedUser,
+                contactMethod: e.target.value,
+              })
             }
             fullWidth
             margin="dense"
@@ -212,7 +313,10 @@ const PeerAmbassador = () => {
             label="Source"
             value={selectedUser?.howHeardAboutUs || ""}
             onChange={(e) =>
-              setSelectedUser({ ...selectedUser, howHeardAboutUs: e.target.value })
+              setSelectedUser({
+                ...selectedUser,
+                howHeardAboutUs: e.target.value,
+              })
             }
             fullWidth
             margin="dense"
@@ -221,7 +325,10 @@ const PeerAmbassador = () => {
             label="Reason"
             value={selectedUser?.whyPeerAmbassador || ""}
             onChange={(e) =>
-              setSelectedUser({ ...selectedUser, whyPeerAmbassador: e.target.value })
+              setSelectedUser({
+                ...selectedUser,
+                whyPeerAmbassador: e.target.value,
+              })
             }
             fullWidth
             margin="dense"
@@ -230,7 +337,10 @@ const PeerAmbassador = () => {
             label="No of Hr/Operators"
             value={selectedUser?.hoursPerMonth || ""}
             onChange={(e) =>
-              setSelectedUser({ ...selectedUser, hoursPerMonth: e.target.value })
+              setSelectedUser({
+                ...selectedUser,
+                hoursPerMonth: e.target.value,
+              })
             }
             fullWidth
             margin="dense"
@@ -273,7 +383,11 @@ const PeerAmbassador = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseEditModal} variant="outlined" color="secondary">
+          <Button
+            onClick={handleCloseEditModal}
+            variant="outlined"
+            color="secondary"
+          >
             Cancel
           </Button>
           <Button onClick={handleSaveChanges} color="primary">
@@ -358,7 +472,11 @@ const PeerAmbassador = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseViewModal} variant="outlined" color="secondary">
+          <Button
+            onClick={handleCloseViewModal}
+            variant="outlined"
+            color="secondary"
+          >
             Close
           </Button>
         </DialogActions>

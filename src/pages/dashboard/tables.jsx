@@ -44,7 +44,7 @@ export function Tables() {
 
   const handleOpenEditModal = (user) => {
     setSelectedUser(user);
-    setPreviewPhoto(user.photo); 
+    setPreviewPhoto(user.photo);
     setOpenEditModal(true);
   };
 
@@ -62,7 +62,6 @@ export function Tables() {
     usersHook.handleDelete(id);
   };
 
-  
   const handleCreateUser = (data) => {
     console.log(data, "data");
     const formData = new FormData();
@@ -99,6 +98,7 @@ export function Tables() {
     {
       field: "photo",
       headerName: "",
+      headerClassName: 'bg-[#000032] text-white',
       renderCell: (params) =>
         params.value ? (
           <div className="p-3 mt-2">
@@ -116,11 +116,12 @@ export function Tables() {
       filterable: false,
       width: 100,
     },
-    { field: "fullName", headerName: "Full Name", flex:1 },
-    { field: "email", headerName: "Email",flex:1 },
-    { field: "phone", headerName: "Phone", flex:1 },
+    { field: "fullName", headerName: "Full Name",  headerClassName: 'bg-[#000032] text-white', flex: 1 },
+    { field: "email", headerName: "Email",headerClassName: 'bg-[#000032] text-white', flex: 1 },
+    { field: "phone", headerName: "Phone",headerClassName: 'bg-[#000032] text-white', flex: 1 },
     {
       field: "status",
+      headerClassName: 'bg-[#000032] text-white',
       headerName: "Status",
       renderCell: (params) => (
         <div className="flex justify-start items-center">
@@ -143,12 +144,13 @@ export function Tables() {
           </Typography>
         </div>
       ),
-      flex:1,
+      flex: 1,
     },
     {
       field: "actions",
+      headerClassName: 'bg-[#000032] text-white',
       headerName: "Actions",
-      flex:1,
+      flex: 1,
       renderCell: (params) => (
         <div className="mt-6 flex gap-2">
           <MdEdit
@@ -166,29 +168,33 @@ export function Tables() {
     },
   ];
 
-  const rows = usersHook?.users?.slice()?.reverse()?.map((user) => ({
-    id: user._id,
-    photo: user.photo.startsWith("http://")
-      ? user.photo.replace("http://", "https://")
-      : user.photo,
-    fullName: user.fullName,
-    email: user.email,
-    phone: user.phone,
-    status: user.status,
-  }));
-console.log(usersHook?.users,"sdsd")
+  const rows = usersHook?.users
+    ?.slice()
+    ?.reverse()
+    ?.map((user) => ({
+      id: user._id,
+      photo: user.photo.startsWith("http://")
+        ? user.photo.replace("http://", "https://")
+        : user.photo,
+      fullName: user.fullName,
+      email: user.email,
+      phone: user.phone,
+      status: user.status,
+    }));
+  console.log(usersHook?.users, "sdsd");
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12">
-      <Card>
+    <div className="mt-12 mb-8 flex flex-col gap-12 ">
+      <Card sx={{ backgroundColor: "#191a45" }}>
         <CardHeader
+          sx={{ backgroundColor: "#191a45" }}
           variant="gradient"
-          color="gray"
-          className="mb-8 p-6 flex justify-between"
+          color="#000032"
+          className="mb-8 p-6 flex justify-between bg-[#191a45] border"
         >
           <Typography variant="h6" color="white">
             Users
           </Typography>
-          <Button onClick={() => setOpenCreateModal(true)} color="primary">
+          <Button onClick={() => setOpenCreateModal(true)} className="bg-[#000032] border">
             Create User
           </Button>
         </CardHeader>
@@ -203,14 +209,47 @@ console.log(usersHook?.users,"sdsd")
             />
           </div>
         ) : (
-          <CardBody className="px-0 pt-0 pb-2">
-            <div style={{ height: 400, width: "100%" }}>
+          <CardBody className="px-0 pt-0 p-0">
+            <div
+              style={{
+                height: 450,
+                width: "100%",
+                backgroundColor: "#191a45",
+                color: "white",
+              }}
+            >
               <DataGrid
                 rows={rows}
                 columns={columns}
                 pageSize={5}
                 autoWidth
                 rowHeight={80}
+                sx={{
+                  "& .MuiDataGrid-root": {
+                    backgroundColor: "#191a45",
+                    color: "white", 
+                  },
+                  "& .MuiDataGrid-cell": {
+                    backgroundColor: "#191a45",
+                    color: "white",
+                  },
+                  "& .MuiDataGrid-footerContainer": {
+                    color: "#fff", // Change footer background color to white
+                  },
+                  "& .MuiTablePagination-root": {
+                    color: "#fff", // Change text color in footer if needed
+                  },
+                  '& .MuiDataGrid-columnHeaders': {
+                    backgroundColor: '#000032', // Set header background color to #000032
+                  },
+                  '& .MuiDataGrid-columnHeaders': {
+                    color: '#000',
+                    backgroundColor: '#000032',
+                  },
+                  '& .MuiDataGrid-columnHeaderRow': {
+                    background: '#000032 !important', // Remove any background
+                  },
+                }}
               />
             </div>
           </CardBody>
@@ -251,7 +290,7 @@ console.log(usersHook?.users,"sdsd")
             fullWidth
             margin="dense"
           />
-         
+
           <TextField
             label="Status"
             variant="outlined"

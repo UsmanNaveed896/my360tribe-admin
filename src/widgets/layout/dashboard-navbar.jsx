@@ -47,39 +47,39 @@ export function DashboardNavbar() {
   return (
     <Navbar
       color={fixedNavbar ? "white" : "transparent"}
-      className={`rounded-xl transition-all ${
+      className={`rounded-xl transition-all text-white ${
         fixedNavbar
-          ? "sticky top-4 z-40 py-3 shadow-md shadow-blue-gray-500/5"
-          : "px-0 py-1"
+          ? "sticky top-4 z-40 py-3 shadow-md text-white shadow-blue-gray-500/5"
+          : "px-0 py-1 text-white"
       }`}
       fullWidth
       blurred={fixedNavbar}
     >
-      <div className="flex flex-col-reverse justify-between gap-6 md:flex-row md:items-center">
+      <div className="flex flex-col-reverse justify-between gap-6 md:flex-row md:items-center text-white">
         <div className="capitalize">
           <Breadcrumbs
-            className={`bg-transparent p-0 transition-all ${
+            className={`bg-transparent p-0 transition-all text-white ${
               fixedNavbar ? "mt-1" : ""
             }`}
           >
             <Link to={`/${layout}`}>
               <Typography
                 variant="small"
-                color="blue-gray"
-                className="font-normal opacity-50 transition-all hover:text-blue-500 hover:opacity-100"
+                  color="white"
+                className="font-normal text-white opacity-50 transition-all hover:text-blue-500 hover:opacity-100"
               >
                 {layout}
               </Typography>
             </Link>
             <Typography
               variant="small"
-              color="blue-gray"
+              color="white"
               className="font-normal"
             >
               {page}
             </Typography>
           </Breadcrumbs>
-          <Typography variant="h6" color="blue-gray">
+          <Typography variant="h6"   color="white">
             {page}
           </Typography>
         </div>
@@ -89,7 +89,7 @@ export function DashboardNavbar() {
           </div>
           <IconButton
             variant="text"
-            color="blue-gray"
+              color="white"
             className="grid xl:hidden"
             onClick={() => setOpenSidenav(dispatch, !openSidenav)}
           >
@@ -99,7 +99,7 @@ export function DashboardNavbar() {
             <Button
             onClick={logOut}
               variant="text"
-              color="blue-gray"
+                color="white"
               className="hidden items-center gap-1 px-4 xl:flex normal-case hover:font-bold"
             >
               <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
@@ -107,7 +107,7 @@ export function DashboardNavbar() {
             </Button>
             <IconButton
               variant="text"
-              color="blue-gray"
+                color="white"
               className="grid xl:hidden"
             >
               <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
@@ -115,7 +115,7 @@ export function DashboardNavbar() {
       
           <Menu>
             <MenuHandler>
-              <IconButton variant="text" color="blue-gray">
+              <IconButton variant="text"   color="white">
                 <BellIcon className="h-5 w-5 text-blue-gray-500" />
               </IconButton>
             </MenuHandler>
