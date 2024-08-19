@@ -3,6 +3,7 @@ export const chartsConfig = {
     toolbar: {
       show: false,
     },
+    background: '#191a45',
   },
   title: {
     show: "",
@@ -19,7 +20,7 @@ export const chartsConfig = {
     },
     labels: {
       style: {
-        colors: "#37474f",
+        colors: "#fff",
         fontSize: "13px",
         fontFamily: "inherit",
         fontWeight: 300,
@@ -29,7 +30,7 @@ export const chartsConfig = {
   yaxis: {
     labels: {
       style: {
-        colors: "#37474f",
+        colors: "#fff",
         fontSize: "13px",
         fontFamily: "inherit",
         fontWeight: 300,
@@ -37,7 +38,7 @@ export const chartsConfig = {
     },
   },
   grid: {
-    show: true,
+    show: false,
     borderColor: "#dddddd",
     strokeDashArray: 5,
     xaxis: {

@@ -95,7 +95,7 @@ export function Home() {
               className: "w-6 h-6 text-white",
             })}
             footer={
-              <Typography className="font-normal text-blue-gray-600">
+              <Typography className="font-normal text-white">
                 <strong className={footer.color}>{footer.value}</strong>
                 &nbsp;{footer.label}
               </Typography>
@@ -111,11 +111,11 @@ export function Home() {
             footer={
               <Typography
                 variant="small"
-                className="flex items-center font-normal text-blue-gray-600"
+                className="flex items-center font-normal text-white"
               >
                 <ClockIcon
                   strokeWidth={2}
-                  className="h-4 w-4 text-blue-gray-400"
+                  className="h-4 w-4 text-white"
                 />
                 &nbsp;{props.footer}
               </Typography>
