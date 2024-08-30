@@ -24,7 +24,7 @@ const icon = {
 const routes = () => {
   
   const { auth, role } = useContext(AuthContext);
-
+console.log(role,"role")
   return [
     {
       layout: 'dashboard',
@@ -35,14 +35,14 @@ const routes = () => {
           path: '/home',
           element: <Home />,
         },
-        {
-          icon: <UserCircleIcon {...icon} />,
-          name: 'Users',
-          path: '/users',
-          element: <Tables />,
-          condition: role === 'superAdmin',
+        // {
+        //   icon: <UserCircleIcon {...icon} />,
+        //   name: 'Users',
+        //   path: '/users',
+        //   element: <Tables />,
+        //   condition: role === 'SUPERADMIN',
        
-        },
+        // },
         // {
         //   icon: <InformationCircleIcon {...icon} />,
         //   name: 'Permissions',
@@ -55,38 +55,38 @@ const routes = () => {
           name: 'Operators',
           path: '/operator',
           element: <Operator />,
-          condition: role === 'superAdmin' || role === 'operator' || role === 'admin',
+          condition: role === 'SUPERADMIN'
         },
         {
           icon: <MdOutlineReduceCapacity {...icon} />,
           name: 'Concierge',
           path: '/concierge',
           element: <Conceirge />,
-          condition: role === 'superAdmin' || role === 'concierge' || role === 'admin',
+          condition: role === 'SUPERADMIN' || role === 'concierge' || role === 'admin',
         },
         {
           icon: <MdSupervisedUserCircle {...icon} />,
           name: 'Peer Ambassador',
           path: '/peerAmbassador',
           element: <PeerAmbassador />,
-          condition: role === 'superAdmin' || role === 'peerAmbassador' || role === 'admin',
+          condition: role === 'SUPERADMIN' || role === 'peerAmbassador' || role === 'admin',
         },
         {
           icon: <FaUsers {...icon} />,
           name: 'Service Partners',
           path: '/servicePartner',
           element: <ServicePartners />,
-          condition: role === 'superAdmin' || role === 'servicePartner' || role === 'admin',
+          condition: role === 'SUPERADMIN' || role === 'servicePartner' || role === 'admin',
 
         },
-        {
-          icon: <MdAssignment  {...icon} />,
-          name: 'Assign',
-          path: '/assigned',
-          element: <AssignedForms />,
-          condition: role === 'superAdmin' || role === 'servicePartner' || role === 'admin',
+        // {
+        //   icon: <MdAssignment  {...icon} />,
+        //   name: 'Assign',
+        //   path: '/assigned',
+        //   element: <AssignedForms />,
+        //   condition: role === 'SUPERADMIN' || role === 'servicePartner' || role === 'admin',
 
-        },
+        // },
       ].filter(route => route.condition !== false), 
     },
 

@@ -25,13 +25,13 @@ import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
 import { employeeData } from "@/data/dummyData";
 import { FaRegSave } from "react-icons/fa";
 
-const Operator = () => {
+const ToOperator = () => {
   const getOperatorksHook = useGetOperatorHook();
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openViewModal, setOpenViewModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [rowData, setRowData] = useState();
-  
+
   const options = {
     AirForce: [
       "Combat Controller/TACP",
@@ -71,7 +71,7 @@ const Operator = () => {
     setBranchOptions(options[branch]);
     setSelectedUser({ ...selectedUser, force: branch });
   };
-console.log(selectedBranch,"selected")
+  console.log(selectedBranch, "selected");
   const handleSubDomainChange = (event) => {
     const subDomain = event.target.value;
     setSelectedUser({ ...selectedUser, speciality: subDomain });
@@ -271,18 +271,8 @@ console.log(selectedBranch,"selected")
 
   console.log(selectedUser, "userr");
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12">
+    <div className=" mb-8 flex flex-col gap-12">
       <Card sx={{ backgroundColor: "#191a45" }}>
-        <CardHeader
-          variant="gradient"
-          color="#000032"
-          className="mb-8 p-6 bg-[#191a45]"
-          sx={{ backgroundColor: "#191a45" }}
-        >
-          <Typography variant="h6" color="white">
-            Operators
-          </Typography>
-        </CardHeader>
         {getOperatorksHook?.loading ? (
           <div className="flex justify-center">
             <Puff
@@ -507,4 +497,4 @@ console.log(selectedBranch,"selected")
   );
 };
 
-export default Operator;
+export default ToOperator;

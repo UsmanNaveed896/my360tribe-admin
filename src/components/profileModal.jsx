@@ -41,15 +41,15 @@ const UserModal = ({ user, open, handleOpen, setOpen }) => {
             <div>
               <p className="font-bold">Full Name:</p>
               <p className="font-bold">Email:</p>
-              <p className="font-bold">Phone:</p>
-              <p className="font-bold">Status:</p>
+              {/* <p className="font-bold">Phone:</p>
+              <p className="font-bold">Status:</p> */}
               <p className="font-bold">Role:</p>
             </div>
             <div>
               <p className="uppercase">{name}</p>
               <p>{localStorage.getItem("email")}</p>
-              <p>{localStorage.getItem("phone")}</p>
-              <p className="uppercase">{localStorage.getItem("status")}</p>
+              {/* <p>{localStorage.getItem("phone")}</p>
+              <p className="uppercase">{localStorage.getItem("status")}</p> */}
               <p className="uppercase">{localStorage.getItem("role")}</p>
             </div>
           </div>
