@@ -19,7 +19,7 @@ const SignIn = () => {
         <div className="grid md:grid-cols-2 grid-cols-1 items-center">
           <div className="colum1">
             <div className="text-white font-semibold text-6xl text-center">
-              Welcome
+              Welcome Super Admin !
             </div>
           </div>
           <div className="column2">
