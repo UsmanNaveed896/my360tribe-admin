@@ -22,12 +22,16 @@ import {
   Select,
 } from "@mui/material";
 import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
-
+import { peerAmbassador } from "@/data/dummyData";
+import { FaRegSave } from "react-icons/fa";
+import { useGetOperatorHook } from "@/hooks/useGetOperatorHook";
 const PeerAmbassador = () => {
+  const getOperatorksHook = useGetOperatorHook();
   const peersGet = useGetPeerAmbassadorHook();
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openViewModal, setOpenViewModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [rowData, setRowData] = useState();
 
   useEffect(() => {
     peersGet.handleGetPeerAmbassador();
@@ -64,66 +68,110 @@ const PeerAmbassador = () => {
   const handleDelete = (id) => {
     peersGet.handleDelete(id);
   };
+  const handleAssigntoConcierge = (value, row) => {
+    if (row == "operator") {
+      let payLoad = {
+        ...value,
+        signed_from: "peer_ambassador",
+        signed_to: "operator",
+        form_id: value.id,
+        user_id: value.id,
+      };
+      setRowData(payLoad);
+    } else if (row == "concierge") {
+      let payLoad = {
+        ...value,
+        signed_from: "peer_ambassador",
+        signed_to: "concierge",
+        form_id: value.id,
+        user_id: value.id,
+      };
+      setRowData(payLoad);
+    } else {
+      let payLoad = {
+        ...value,
+        signed_from: "peer_ambassador",
+        signed_to: "service_partners",
+        form_id: value.id,
+        user_id: value.id,
+      };
+      setRowData(payLoad);
+    }
+  };
+  const handleSave = () => {
+    getOperatorksHook.handleAssignOperatortoConcierge(rowData);
+  };
 
+  useEffect(() => {
+    peersGet.handleGetPeerAmbassador();
+  }, [getOperatorksHook.loginResponse]);
   const columns = [
     {
-      field: "fullName",
+      field: "full_name",
       headerName: "Full Name",
-      flex: 1,
+      width: 200,
       headerClassName: "bg-[#000032] text-white",
     },
     {
-      field: "dob",
+      field: "birth_date",
       headerName: "DOB",
-      flex: 1,
+      width: 150,
       headerClassName: "bg-[#000032] text-white",
     },
     {
-      field: "branchOfService",
+      field: "service_branch",
       headerName: "Branch of Service",
-      flex: 1,
+      width: 200,
+
       headerClassName: "bg-[#000032] text-white",
     },
     {
-      field: "contactMethod",
+      field: "contact_number",
       headerName: "Contact Method",
-      flex: 1,
+      width: 150,
+
       headerClassName: "bg-[#000032] text-white",
     },
     {
-      field: "howHeardAboutUs",
+      field: "how_heard_about_us",
       headerName: "Source",
-      flex: 1,
+      width: 200,
+
       headerClassName: "bg-[#000032] text-white",
     },
     {
-      field: "whyPeerAmbassador",
+      field: "why_peer_ambassador",
       headerName: "Reason",
-      flex: 1,
+      width: 200,
+
       headerClassName: "bg-[#000032] text-white",
     },
     {
-      field: "hoursPerMonth",
+      field: "hours_per_month",
       headerName: "No of Hr/Operators",
-      flex: 1,
+      width: 150,
+
       headerClassName: "bg-[#000032] text-white",
     },
     {
-      field: "transitionServices",
+      field: "transition_services",
       headerName: "Organization",
-      flex: 1,
+      width: 200,
+
       headerClassName: "bg-[#000032] text-white",
     },
     {
-      field: "recommendedTransitionServices",
+      field: "areas_of_support",
       headerName: "Support Areas",
-      flex: 1,
+      width: 200,
+
       headerClassName: "bg-[#000032] text-white",
     },
     {
-      field: "uncomfortableTopics",
+      field: "uncomfortable_topics",
       headerName: "Topics",
-      flex: 1,
+      width: 200,
+
       headerClassName: "bg-[#000032] text-white",
     },
     {
@@ -132,7 +180,7 @@ const PeerAmbassador = () => {
       headerName: "Assign to",
       width: 200,
       renderCell: (params) => (
-        <div className="mt-3">
+        <div className="mt-3 text-white flex gap-3 items-center">
           <FormControl sx={{ width: "150px" }}>
             <InputLabel id="demo-simple-select-label" sx={{ color: "white" }}>
               Assign To
@@ -142,6 +190,9 @@ const PeerAmbassador = () => {
               id="demo-simple-select"
               variant="standard"
               label="Age"
+              onChange={(event) =>
+                handleAssigntoConcierge(params.row, event.target.value)
+              }
               sx={{
                 color: "white", // Changes the selected text color
                 "& .MuiSvgIcon-root": {
@@ -149,11 +200,19 @@ const PeerAmbassador = () => {
                 },
               }}
             >
-              <MenuItem value={10}>Concierge</MenuItem>
-              <MenuItem value={20}>Operators</MenuItem>
-              <MenuItem value={30}>Service Partner</MenuItem>
+             <MenuItem value={"operator"}>Operator</MenuItem>
+              <MenuItem value={"concierge"}>Concierge</MenuItem>
+              <MenuItem value={"servicePartner"}>Service Partner</MenuItem>
             </Select>
           </FormControl>
+          {rowData ? (
+            <FaRegSave
+              className="w-4 h-4 mt-4 cursor-pointer"
+              onClick={handleSave}
+            />
+          ) : (
+            ""
+          )}
         </div>
       ),
     },
@@ -161,7 +220,8 @@ const PeerAmbassador = () => {
       field: "actions",
       headerClassName: "bg-[#000032] text-white",
       headerName: "Actions",
-      flex: 1,
+      width: 200,
+
       renderCell: (params) => (
         <div style={{ display: "flex", gap: "6px" }} className="mt-6">
           <MdVisibility
@@ -223,7 +283,8 @@ const PeerAmbassador = () => {
               }}
             >
               <DataGrid
-                rows={rows}
+                // rows={rows}
+                rows={peersGet?.getPeerAmbassador || []}
                 columns={columns}
                 pageSize={5}
                 rowHeight={80}
@@ -263,18 +324,18 @@ const PeerAmbassador = () => {
         <DialogContent>
           <TextField
             label="Full Name"
-            value={selectedUser?.fullName || ""}
+            value={selectedUser?.full_name || ""}
             onChange={(e) =>
-              setSelectedUser({ ...selectedUser, fullName: e.target.value })
+              setSelectedUser({ ...selectedUser, full_name: e.target.value })
             }
             fullWidth
             margin="dense"
           />
           <TextField
             label="DOB"
-            value={selectedUser?.dob?.slice(0, 10) || ""}
+            value={selectedUser?.birth_date || ""}
             onChange={(e) =>
-              setSelectedUser({ ...selectedUser, dob: e.target.value })
+              setSelectedUser({ ...selectedUser, birth_date: e.target.value })
             }
             fullWidth
             margin="dense"
@@ -282,11 +343,11 @@ const PeerAmbassador = () => {
           <TextField
             label="Branch of Service"
             select
-            value={selectedUser?.branchOfService || ""}
+            value={selectedUser?.service_branch || ""}
             onChange={(e) =>
               setSelectedUser({
                 ...selectedUser,
-                branchOfService: e.target.value,
+                service_branch: e.target.value,
               })
             }
             fullWidth
@@ -299,11 +360,11 @@ const PeerAmbassador = () => {
           </TextField>
           <TextField
             label="Contact Method"
-            value={selectedUser?.contactMethod || ""}
+            value={selectedUser?.contact_number || ""}
             onChange={(e) =>
               setSelectedUser({
                 ...selectedUser,
-                contactMethod: e.target.value,
+                contact_number: e.target.value,
               })
             }
             fullWidth
@@ -311,11 +372,11 @@ const PeerAmbassador = () => {
           />
           <TextField
             label="Source"
-            value={selectedUser?.howHeardAboutUs || ""}
+            value={selectedUser?.how_heard_about_us || ""}
             onChange={(e) =>
               setSelectedUser({
                 ...selectedUser,
-                howHeardAboutUs: e.target.value,
+                how_heard_about_us: e.target.value,
               })
             }
             fullWidth
@@ -323,11 +384,11 @@ const PeerAmbassador = () => {
           />
           <TextField
             label="Reason"
-            value={selectedUser?.whyPeerAmbassador || ""}
+            value={selectedUser?.why_peer_ambassador || ""}
             onChange={(e) =>
               setSelectedUser({
                 ...selectedUser,
-                whyPeerAmbassador: e.target.value,
+                why_peer_ambassador: e.target.value,
               })
             }
             fullWidth
@@ -335,11 +396,11 @@ const PeerAmbassador = () => {
           />
           <TextField
             label="No of Hr/Operators"
-            value={selectedUser?.hoursPerMonth || ""}
+            value={selectedUser?.hours_per_month || ""}
             onChange={(e) =>
               setSelectedUser({
                 ...selectedUser,
-                hoursPerMonth: e.target.value,
+                hours_per_month: e.target.value,
               })
             }
             fullWidth
@@ -347,11 +408,11 @@ const PeerAmbassador = () => {
           />
           <TextField
             label="Organization"
-            value={selectedUser?.transitionServices || ""}
+            value={selectedUser?.transition_services || ""}
             onChange={(e) =>
               setSelectedUser({
                 ...selectedUser,
-                transitionServices: e.target.value,
+                transition_services: e.target.value,
               })
             }
             fullWidth
@@ -359,11 +420,11 @@ const PeerAmbassador = () => {
           />
           <TextField
             label="Support Areas"
-            value={selectedUser?.recommendedTransitionServices || ""}
+            value={selectedUser?.areas_of_support || ""}
             onChange={(e) =>
               setSelectedUser({
                 ...selectedUser,
-                recommendedTransitionServices: e.target.value,
+                areas_of_support: e.target.value,
               })
             }
             fullWidth
@@ -371,11 +432,11 @@ const PeerAmbassador = () => {
           />
           <TextField
             label="Topics"
-            value={selectedUser?.uncomfortableTopics || ""}
+            value={selectedUser?.uncomfortable_topics || ""}
             onChange={(e) =>
               setSelectedUser({
                 ...selectedUser,
-                uncomfortableTopics: e.target.value,
+                uncomfortable_topics: e.target.value,
               })
             }
             fullWidth
@@ -402,70 +463,70 @@ const PeerAmbassador = () => {
         <DialogContent>
           <TextField
             label="Full Name"
-            value={selectedUser?.fullName || ""}
+            value={selectedUser?.full_name || ""}
             fullWidth
             margin="dense"
             readOnly
           />
           <TextField
             label="DOB"
-            value={selectedUser?.dob?.slice(0, 10) || ""}
+            value={selectedUser?.birth_date || ""}
             fullWidth
             margin="dense"
             readOnly
           />
           <TextField
             label="Branch of Service"
-            value={selectedUser?.branchOfService || ""}
+            value={selectedUser?.service_branch || ""}
             fullWidth
             margin="dense"
             readOnly
           />
           <TextField
             label="Contact Method"
-            value={selectedUser?.contactMethod || ""}
+            value={selectedUser?.contact_number || ""}
             fullWidth
             margin="dense"
             readOnly
           />
           <TextField
             label="Source"
-            value={selectedUser?.howHeardAboutUs || ""}
+            value={selectedUser?.how_heard_about_us || ""}
             fullWidth
             margin="dense"
             readOnly
           />
           <TextField
             label="Reason"
-            value={selectedUser?.whyPeerAmbassador || ""}
+            value={selectedUser?.why_peer_ambassador || ""}
             fullWidth
             margin="dense"
             readOnly
           />
           <TextField
             label="No of Hr/Operators"
-            value={selectedUser?.hoursPerMonth || ""}
+            value={selectedUser?.hours_per_month || ""}
             fullWidth
             margin="dense"
             readOnly
           />
           <TextField
             label="Organization"
-            value={selectedUser?.transitionServices || ""}
+            value={selectedUser?.transition_services || ""}
             fullWidth
             margin="dense"
             readOnly
           />
           <TextField
             label="Support Areas"
-            value={selectedUser?.recommendedTransitionServices || ""}
+            value={selectedUser?.areas_of_support || ""}
             fullWidth
             margin="dense"
             readOnly
           />
           <TextField
             label="Topics"
-            value={selectedUser?.uncomfortableTopics || ""}
+            value={selectedUser?.uncomfortable_topics || ""}
             fullWidth
             margin="dense"
             readOnly
