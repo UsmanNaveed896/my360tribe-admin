@@ -4,147 +4,149 @@ import {
   CardHeader,
   CardBody,
   Typography,
-  Button,
 } from "@material-tailwind/react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Puff } from "react-loader-spinner";
 import { useGetOperatorHook } from "@/hooks/useGetOperatorHook";
 import {
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
-  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Select,
   MenuItem,
-  CircularProgress,
   FormControl,
   InputLabel,
-  Select,
+  Chip,
+  TextField,
+  DialogActions,
 } from "@mui/material";
-import { MdDelete, MdEdit, MdVisibility } from "react-icons/md";
-import { employeeData } from "@/data/dummyData";
-import { FaRegSave } from "react-icons/fa";
-
+import { MdVisibility } from "react-icons/md";
+import { useGetConciergeHook } from "@/hooks/useGetConciergeHook";
+import { useGetPeerAmbassadorHook } from "@/hooks/useGetPeerAmbassadorHook";
+import { useServicePartnerHook } from "@/hooks/useServicePartners";
+import { IoIosCloseCircle } from "react-icons/io";
+import { CiEdit } from "react-icons/ci";
 const Operator = () => {
   const getOperatorksHook = useGetOperatorHook();
+  const concierge = useGetConciergeHook();
+  const peers = useGetPeerAmbassadorHook();
+  const partners = useServicePartnerHook();
+
+  const [openAssignModal, setOpenAssignModal] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("");
+  const [rowData, setRowData] = useState([]);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [openViewModal, setOpenViewModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [rowData, setRowData] = useState();
-  
-  const options = {
-    AirForce: [
-      "Combat Controller/TACP",
-      "Pararescue (PJ)",
-      "24th Special Tactics Squadron (JSOC)",
-    ],
-    Army: [
-      "Ranger (75th Regiment)",
-      "Green Beret",
-      "SMU",
-      "Marine Force Recon",
-      "160th Special Operations Aviation Regiment (SOAR) Night Stalkers",
-    ],
-    Navy: ["EOD", "SEAL", "SWCC"],
-    Marines: ["Raider", "Marine Force Recon"],
-  };
-
-  const [selectedBranch, setSelectedBranch] = useState("AirForce");
-  const [branchOptions, setBranchOptions] = useState(options[selectedBranch]);
-
-  const roles = ["Service partner", "Concierge", "Peer Ambassador"];
-
-  useEffect(() => {
-    getOperatorksHook.handleGetOperator();
-  }, [getOperatorksHook.loginResponse]);
-
-  useEffect(() => {
-    if (selectedUser) {
-      setSelectedBranch(selectedUser.force);
-      setBranchOptions(options[selectedUser.force]);
-    }
-  }, [selectedUser]);
-
-  const handleBranchChange = (event) => {
-    const branch = event.target.value;
-    setSelectedBranch(branch);
-    setBranchOptions(options[branch]);
-    setSelectedUser({ ...selectedUser, force: branch });
-  };
-console.log(selectedBranch,"selected")
-  const handleSubDomainChange = (event) => {
-    const subDomain = event.target.value;
-    setSelectedUser({ ...selectedUser, speciality: subDomain });
-  };
-
-  const handleAssignToChange = (event) => {
-    const role = event.target.value;
-    setSelectedUser({ ...selectedUser, assignTo: role });
-  };
-
-  const handleOpenEditModal = (user) => {
-    setSelectedUser(user);
-    setOpenEditModal(true);
-  };
+ const [id,setId]=useState()
 
   const handleOpenViewModal = (user) => {
     setSelectedUser(user);
     setOpenViewModal(true);
   };
-
-  const handleCloseEditModal = () => {
-    setSelectedUser(null);
-    setOpenEditModal(false);
-  };
-
   const handleCloseViewModal = () => {
     setSelectedUser(null);
     setOpenViewModal(false);
   };
-
-  const handleSaveChanges = () => {
-    getOperatorksHook.handleEditOperatorForm(selectedUser);
-    handleCloseEditModal();
+  const handleOpenEditModal = (row) => {
+    setOpenEditModal(true);
+    setSelectedRow(row);
   };
 
-  const handleDelete = (id) => {
-    getOperatorksHook.handleDelete(id);
+  const handleUpdateStatus = () => {
+    let payLoad = {
+      id: selectedRow.id,
+      status: "approved",
+    };
+    getOperatorksHook.handleUpdateStatus(payLoad, handleCloseEditModal);
   };
 
-  const handleAssigntoConcierge = (value, row) => {
-    if (row == "concierge") {
+  const handleCloseEditModal = () => {
+    setOpenEditModal(false);
+  };
+
+  const handleOpenAssignModal = (role) => {
+    setSelectedRole(role);
+
+    if (role === "concierge") {
+      concierge.handleGetConcierge();
+    } else if (role === "peerAmbassador") {
+      peers.handleGetPeerAmbassador();
+    } else if (role === "servicePartner") {
+      partners.handleGetServicePartner();
+    }
+
+    setOpenAssignModal(true);
+  };
+console.log(rowData,"dddd")
+  const handleCloseAssignModal = () => {
+    setSelectedRole("");
+    setOpenAssignModal(false);
+  };
+
+  const handleAssignToChange = (row, value) => {
+    setRowData(row);
+    handleOpenAssignModal(value);
+  };
+
+  console.log(selectedRole,"ss")
+  const handleAssign = (value) => {
+    setId(value)
+    if (selectedRole == "concierge") {
       let payLoad = {
-        ...value,
+        ...rowData,
+        concierge_form_id:id.id,
         signed_from: "operators",
         signed_to: "concierge",
-        form_id: value.id,
-        user_id: value.id,
+        form_id: rowData.id,
+        user_id: parseInt(rowData.user_id),
       };
-      setRowData(payLoad);
-    } else if (row == "peerAmbassador") {
+      getOperatorksHook.handleAssignOperatortoConcierge(
+        payLoad,
+        handleCloseAssignModal
+      );
+    } else if (selectedRole == "peerAmbassador") {
       let payLoad = {
-        ...value,
+        ...rowData,
+        peer_ambassador_form_id:id.id,
         signed_from: "operators",
         signed_to: "peer_ambassador",
-        form_id: value.id,
-        user_id: value.id,
+        form_id: rowData.id,
+        user_id:  parseInt(rowData.user_id),
       };
-      setRowData(payLoad);
+      getOperatorksHook.handleAssignOperatortoConcierge(
+        payLoad,
+        handleCloseAssignModal
+      );
     } else {
       let payLoad = {
-        ...value,
+        ...rowData,
+        service_partner_form_id:id.id,
         signed_from: "operators",
         signed_to: "service_partners",
-        form_id: value.id,
-        user_id: value.id,
+        form_id: rowData.id,
+        user_id:  parseInt(rowData.user_id),
       };
-      setRowData(payLoad);
+
+      getOperatorksHook.handleAssignOperatortoConcierge(
+        payLoad,
+        handleCloseAssignModal
+      );
     }
   };
-
-  const handleSave = () => {
-    getOperatorksHook.handleAssignOperatortoConcierge(rowData);
-  };
+  console.log(id,"idssssss")
+  useEffect(() => {
+    getOperatorksHook.handleGetOperator();
+  }, [getOperatorksHook.loginResponse]);
   const columns = [
     {
       field: "fullName",
@@ -188,23 +190,50 @@ console.log(selectedBranch,"selected")
       headerClassName: "bg-[#000032] text-white",
     },
     {
+      field: "created_at",
+      headerName: "Status",
+      width: 150,
+      headerClassName: "bg-[#000032] text-white",
+      renderCell: (params) => (
+        <div>
+          <div className="flex gap-2 items-center mt-5">
+            <Chip
+              color={params?.value == "pending" ? "error" : "success"}
+              className="text-white"
+              label={params.value}
+            />
+            {params.value == "pending" ? (
+              <CiEdit
+                className="cursor-pointer"
+                onClick={() => handleOpenEditModal(params.row)}
+              />
+            ) : (
+              ""
+            )}
+          </div>
+        </div>
+      ),
+    },
+    {
       field: "assignTo",
       headerClassName: "bg-[#000032] text-white",
       headerName: "Assign to",
       width: 200,
       renderCell: (params) => (
         <div className="mt-3 text-white flex gap-3 items-center">
+ 
           <FormControl sx={{ width: "150px" }}>
-            <InputLabel id="demo-simple-select-label" sx={{ color: "white" }}>
-              Assign To
+            <InputLabel id="demo-simple-select-label" sx={{ color: params.row.created_at == "pending" ? "gray" : "white" }}>
+            {params.row.created_at == "pending" ? "Pending" : "Assign To"}
             </InputLabel>
             <Select
+              disabled={params.row.created_at == "pending"}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               variant="standard"
-              label="Assign To"
+              label={params.row.created_at == "pending" ? "Pending" : "Assign To"}
               onChange={(event) =>
-                handleAssigntoConcierge(params.row, event.target.value)
+                handleAssignToChange(params.row, event.target.value)
               }
               sx={{
                 color: "white",
@@ -227,14 +256,6 @@ console.log(selectedBranch,"selected")
               <MenuItem value={"servicePartner"}>Service Partner</MenuItem>
             </Select>
           </FormControl>
-          {rowData ? (
-            <FaRegSave
-              className="w-4 h-4 mt-4 cursor-pointer"
-              onClick={handleSave}
-            />
-          ) : (
-            ""
-          )}
         </div>
       ),
     },
@@ -249,14 +270,6 @@ console.log(selectedBranch,"selected")
             className="cursor-pointer w-5 h-5"
             onClick={() => handleOpenViewModal(params.row)}
           />
-          <MdEdit
-            className="cursor-pointer w-5 h-5"
-            onClick={() => handleOpenEditModal(params.row)}
-          />
-          <MdDelete
-            className="cursor-pointer w-5 h-5"
-            onClick={() => handleDelete(params.row.id)}
-          />
         </div>
       ),
     },
@@ -269,7 +282,76 @@ console.log(selectedBranch,"selected")
     DOB: operator?.birth_date,
   }));
 
-  console.log(selectedUser, "userr");
+  
+  const renderModalContent = () => {
+    let dataToRender;
+
+    if (selectedRole === "concierge") {
+      dataToRender = concierge.getConcierge || [];
+    } else if (selectedRole === "peerAmbassador") {
+      dataToRender = peers.getPeerAmbassador || [];
+    } else if (selectedRole === "servicePartner") {
+      dataToRender = partners.getServicePartner || [];
+    } else {
+      dataToRender = [];
+    }
+
+    const approvedData = dataToRender.filter(
+      (user) => user.status === "approved"
+    );
+
+    if (approvedData.length === 0) {
+      return (
+        <Typography
+          variant="body1"
+          color="textSecondary"
+          align="center"
+          style={{ marginTop: 20 }}
+        >
+          No approved forms found.
+        </Typography>
+      );
+    }
+
+    return (
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Phone</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {approvedData.map((user, index) => (
+              <TableRow key={user.id}>
+                <TableCell>
+                  {user.full_name || user.name || user.organization_name}
+                </TableCell>
+                <TableCell>{user.phone_number || "N/A"}</TableCell>
+                <TableCell>
+                  {user.email || user.point_of_contact_email || "N/A"}
+                </TableCell>
+                <TableCell>
+                  <Button
+                    sx={{ backgroundColor: "#191a45" }}
+                    variant="contained"
+                    size="small"
+                    onClick={() => handleAssign(user)}
+                  >
+                    Assign
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  };
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card sx={{ backgroundColor: "#191a45" }}>
@@ -307,7 +389,6 @@ console.log(selectedBranch,"selected")
             >
               <DataGrid
                 rows={rows?.reverse()}
-                // rows={employeeData}
                 columns={columns}
                 pageSize={5}
                 rowHeight={80}
@@ -341,112 +422,50 @@ console.log(selectedBranch,"selected")
         )}
       </Card>
 
-      {/* Edit Modal */}
-      <Dialog open={openEditModal} onClose={handleCloseEditModal}>
-        <DialogTitle>Edit Operator</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="First Name"
-            value={selectedUser?.first_name}
-            onChange={(e) =>
-              setSelectedUser({
-                ...selectedUser,
-                first_name: e.target.value,
-              })
-            }
-            fullWidth
-            margin="dense"
+      <Dialog
+        open={openAssignModal}
+        onClose={handleCloseAssignModal}
+        maxWidth="lg"
+        fullWidth
+      >
+        <div className="flex justify-between items-center px-5">
+          <DialogTitle>Assign Form</DialogTitle>
+          <IoIosCloseCircle
+            className="w-5 h-5 cursor-pointer"
+            onClick={handleCloseAssignModal}
           />
-          <TextField
-            label="Last Name"
-            value={selectedUser?.last_name}
-            onChange={(e) =>
-              setSelectedUser({
-                ...selectedUser,
-                last_name: e.target.value,
-              })
-            }
-            fullWidth
-            margin="dense"
-          />
-          <TextField
-            label="DOB"
-            value={selectedUser?.birth_date}
-            onChange={(e) =>
-              setSelectedUser({ ...selectedUser, birth_date: e.target.value })
-            }
-            fullWidth
-            margin="dense"
-          />
-          <TextField
-            label="Department"
-            select
-            value={selectedBranch}
-            onChange={handleBranchChange}
-            fullWidth
-            margin="dense"
-          >
-            <MenuItem value="AirForce">Air Force AFSOC</MenuItem>
-            <MenuItem value="Army">Army USASOC</MenuItem>
-            <MenuItem value="Marines">Marines MARSOC</MenuItem>
-            <MenuItem value="Navy">Navy NSW NSO</MenuItem>
-          </TextField>
-          <TextField
-            label="Sub Domain"
-            select
-            value={selectedUser?.speciality}
-            onChange={handleSubDomainChange}
-            fullWidth
-            margin="dense"
-          >
-            {branchOptions?.map((option, index) => (
-              <MenuItem key={index} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            label="Location"
-            value={selectedUser?.address}
-            onChange={(e) =>
-              setSelectedUser({ ...selectedUser, address: e.target.value })
-            }
-            fullWidth
-            margin="dense"
-          />
-          {/* <TextField
-            label="Assign to"
-            select
-            value={selectedUser?.assignTo || ""}
-            onChange={handleAssignToChange}
-            fullWidth
-            margin="dense"
-          >
-            {roles.map((role, index) => (
-              <MenuItem key={index} value={role}>
-                {role}
-              </MenuItem>
-            ))}
-          </TextField> */}
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleCloseEditModal}
-            variant="outlined"
-            color="secondary"
-          >
-            Cancel
-          </Button>
-          <Button onClick={handleSaveChanges} color="primary">
-            {getOperatorksHook.loading ? (
-              <CircularProgress size={24} />
-            ) : (
-              "Save Changes"
-            )}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        </div>
 
+        <DialogContent>{renderModalContent()}</DialogContent>
+      </Dialog>
+      {/* Update STAtus ModAL */}
+      {openEditModal && (
+        <Dialog
+          open={openEditModal}
+          onClose={handleCloseEditModal}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>Approve Operator</DialogTitle>
+          <DialogContent>
+            <Typography variant="body1">
+              Are you sure you want to approve this operator?
+            </Typography>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handleUpdateStatus}
+              >
+                Approve
+              </Button>
+              <Button variant="outlined" onClick={handleCloseEditModal}>
+                Cancel
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
       {/* View Modal */}
       <Dialog open={openViewModal} onClose={handleCloseViewModal}>
         <DialogTitle>View Operator</DialogTitle>
@@ -493,7 +512,7 @@ console.log(selectedBranch,"selected")
             margin="dense"
             readOnly
           />
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant="body2" color="textSecondary" style={{marginTop:'4px'}}>
             Employed: {selectedUser?.currentlyEmployed ? "Yes" : "No"}
           </Typography>
         </DialogContent>
